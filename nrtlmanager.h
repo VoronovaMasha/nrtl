@@ -79,6 +79,11 @@ struct RMeshModel : public NrtlManager
     static bool deleteMesh(DataId id);
     static bool align(DataId mesh_id, DataId dst_id, QVector<QVector3D> mesh_points, QVector<QVector3D> dst_points);
 
+    static MeshModel* getMeshData(DataId mesh_id)
+    {
+        return model->meshData.getElement(mesh_id);
+    }
+
     class Name
     {
     public:
