@@ -1,0 +1,37 @@
+QMainWindow {
+    background-color: rgb(93, 93, 93);
+    color: white;
+}
+
+
+QDockWidget::title {
+    background: gray;
+}
+
+QMenuBar {
+    background-color: rgb(93, 93, 93);
+    color: white;
+}
+
+QToolBar {
+    background-color: rgb(93, 93, 93);
+    color: white;
+}
+
+
+QMenu {
+    background-color: rgb(93, 93, 93);
+    color: white;
+}
+
+QMenu::item {
+    background-color: transparent;
+}
+
+QMenu::item:selected
+{
+    background-color: rgb(120, 120, 125);
+    color: black;
+}
+
+

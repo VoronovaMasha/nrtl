@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/img">
+        <file>icons/icon_add_cube.png</file>
+        <file>icons/icon_add_cut_cube.png</file>
+        <file>icons/icon_add_folder.png</file>
+        <file>icons/icon_add_picture.png</file>
+        <file>icons/icon_add_polyline.png</file>
+        <file>icons/icon_add_section_cube.png</file>
+        <file>icons/icon_add_transparent_polyline.png</file>
+        <file>icons/icon_align.png</file>
+        <file>icons/icon_check_polyline.png</file>
+        <file>icons/icon_color.png</file>
+        <file>icons/icon_contour.png</file>
+        <file>icons/icon_create_polyline.png</file>
+        <file>icons/icon_cube.png</file>
+        <file>icons/icon_cut_cube.png</file>
+        <file>icons/icon_delete.png</file>
+        <file>icons/icon_edit.png</file>
+        <file>icons/icon_folder.png</file>
+        <file>icons/icon_mesh_align.png</file>
+        <file>icons/icon_open.png</file>
+        <file>icons/icon_picture.png</file>
+        <file>icons/icon_polyline.png</file>
+        <file>icons/icon_redo.png</file>
+        <file>icons/icon_save.png</file>
+        <file>icons/icon_screenshot.png</file>
+        <file>icons/icon_section_cube.png</file>
+        <file>icons/icon_transparent_check_polyline.png</file>
+        <file>icons/icon_transparent_polyline.png</file>
+        <file>icons/icon_undo.png</file>
+        <file>icons/icon_connect_borders.png</file>
+        <file>icons/icon_new_document.png</file>
+        <file>icons/icon_save_as.png</file>
+        <file>icons/icon_reset.png</file>
+        <file>textures/cube.png</file>
+    </qresource>
+    <qresource prefix="/ogl">
+        <file>shaders/fshader.fsh</file>
+        <file>shaders/vshader.vsh</file>
+    </qresource>
+    <qresource prefix="/qss">
+        <file>styles/dark.qss</file>
+    </qresource>
+</RCC>
