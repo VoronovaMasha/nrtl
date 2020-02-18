@@ -12,7 +12,14 @@ QString loadTxtFile(const QString& path);
 
 int main(int argc, char *argv[])
 {
+    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QApplication a(argc, argv);
+    QSurfaceFormat format;
+    format.setVersion(2,1);
+    format.setProfile(QSurfaceFormat::CoreProfile);
+    format.setDepthBufferSize(32);
+    format.setSamples(16);
+    QSurfaceFormat::setDefaultFormat(format);
     MainWindow w;
     NrtlModel* md = new NrtlModel();
     NrtlManager::initModel(md);
