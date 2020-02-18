@@ -74,7 +74,6 @@ MainWindow::MainWindow(QWidget *parent)
     act_Undo->setIcon(QIcon(":/img/icons/icon_undo.png"));
     act_Redo->setIcon(QIcon(":/img/icons/icon_redo.png"));
 
-//    act_Align->setDisabled(true);
     act_SelectSection->setDisabled(true);
     act_DrawPl->setDisabled(true);
     act_ConnectBorders->setDisabled(false);

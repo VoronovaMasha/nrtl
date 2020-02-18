@@ -54,22 +54,4 @@ struct IGroupId
         return (_id == NONE);
     }
 };
-
-/*bool operator==(const int val, const IGroupId& gr)
-{
-    return (gr._id == val);
-}
-bool operator!=(const int val, const IGroupId& gr)
-{
-    return (gr._id != val);
-}
-
-/*bool operator==(const IGroupId& gr, const int val)
-{
-    return (gr._id == val);
-}
-bool operator!=(const IGroupId& gr, const int val)
-{
-    return (gr._id != val);
-}*/
 #endif // NRTLTYPE_H
