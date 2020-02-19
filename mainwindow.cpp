@@ -8,6 +8,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include "MeshAlgorithm.h"
+#include "allignwindow.h"
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -199,7 +200,36 @@ void MainWindow::on_OpenAction_clicked()
 
 void MainWindow::on_AlignAction_clicked()
 {
+    DataId id=ROutlinerData::MainMesh::get();
+    if(id==NONE)
+    {
+        QMessageBox::warning(this, "Warning", "Before alligning load main mesh.");
+        return;
+    }
+    id=ROutlinerData::WorkingStep::get();
+    if(id==NONE)
+    {
+        QMessageBox::warning(this, "Warning", "Before alligning choose current step.");
+        return;
+    }
+    id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
+    if(id==NONE)
+    {
+        QMessageBox::warning(this, "Warning", "Before alligning load cut to current step.");
+        return;
+    }
+    AllignWindow *dialog=new AllignWindow(MeshData::get().getElement(ROutlinerData::MainMesh::get()),
+                                          MeshData::get().getElement(RStep::MeshCut::get(ROutlinerData::WorkingStep::get())),
+                                          ROutlinerData::MainMesh::get(),
+                                          RStep::MeshCut::get(ROutlinerData::WorkingStep::get()));
+    connect (dialog, SIGNAL (ok(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)),
+             this, SLOT(alligning(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)));
+    dialog->showMaximized();
+}
 
+void MainWindow::alligning(QVector<QVector3D> a, QVector<QVector3D> b, DataId mesh_id1, DataId mesh_id2)
+{
+    RMeshModel::align(mesh_id2,mesh_id1,b,a);
 }
 
 

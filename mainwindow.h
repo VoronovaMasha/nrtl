@@ -35,6 +35,7 @@ public:
 private slots:
     void on_OpenAction_clicked();
     void on_AlignAction_clicked();
+    void alligning(QVector<QVector3D> a,QVector<QVector3D> b, DataId mesh_id1, DataId mesh_id2);
 
 private:
     Ui::MainWindow *ui;
