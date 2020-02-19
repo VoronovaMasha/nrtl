@@ -113,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     outlinerWgt->setObjLoaderAction(act_LoadObj);
 
-    statusWgt->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::Popup | Qt::Dialog );
+    statusWgt->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::Dialog );
     statusWgt->setWindowModality(Qt::WindowModal);
     statusWgt->setWindowTitle("Loading...");
     statusWgt->resize(200, 100);
