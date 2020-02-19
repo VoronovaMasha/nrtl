@@ -72,6 +72,8 @@ private slots:
     void change(QString);
     void make_step_current();
     void makeMainMeshVisible();
+
+    void on_treeItem_doubleClicked(QTreeWidgetItem* itm, int column);
 };
 
 #endif // OUTLINERCLASS_H

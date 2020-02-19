@@ -32,6 +32,8 @@ OutlinerWidget::OutlinerWidget()
     mainMesh=new QTreeWidgetItem();
     mainMesh->setText(0,name_step);
     tree->addTopLevelItem(mainMesh);
+
+    connect(tree, &QTreeWidget::itemDoubleClicked, this, &OutlinerWidget::on_treeItem_doubleClicked);
 }
 
 void OutlinerWidget::addMainModel(MeshModel *mesh,QString name)
@@ -383,5 +385,11 @@ void OutlinerWidget::makeMainMeshVisible()
         RMeshModel::Visibility::makeAllUnvisible();
     update();
     emit need_update();
+}
+
+void OutlinerWidget::on_treeItem_doubleClicked(QTreeWidgetItem* itm, int column)
+{
+Q_UNUSED(itm)
+Q_UNUSED(column)
 }
 
