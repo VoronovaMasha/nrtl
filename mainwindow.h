@@ -63,7 +63,7 @@ private:
     QAction* act_Outliner;
     QAction* act_TractEd;
     QAction* act_NewDoc;
-    QAction* act_OpenDoc;
+    QAction* act_LoadObj;
     QAction* act_SaveDoc;
     QAction* act_SaveDocAs;
     QAction* act_ResetDoc;

@@ -44,7 +44,7 @@ MainWindow::MainWindow(QWidget *parent)
     act_Outliner = new QAction("Outiner");
     act_TractEd = new QAction("Tract Editor");
     act_NewDoc = new QAction("New");
-    act_OpenDoc = new QAction("Open");
+    act_LoadObj = new QAction("Load");
     act_SaveDoc = new QAction("Save");
     act_SaveDocAs = new QAction("Save As");
     act_ResetDoc = new QAction("Reset");
@@ -68,7 +68,7 @@ MainWindow::MainWindow(QWidget *parent)
     act_ConnectBorders->setIcon(QIcon(":/img/icons/icon_connect_borders.png"));
 
     act_NewDoc->setIcon(QIcon(":/img/icons/icon_new_document.png"));
-    act_OpenDoc->setIcon(QIcon(":/img/icons/icon_open.png"));
+    act_LoadObj->setIcon(QIcon(":/img/icons/icon_open.png"));
     act_SaveDoc->setIcon(QIcon(":/img/icons/icon_save.png"));
     act_SaveDocAs->setIcon(QIcon(":/img/icons/icon_save_as.png"));
     act_ResetDoc->setIcon(QIcon(":/img/icons/icon_reset.png"));
@@ -97,9 +97,11 @@ MainWindow::MainWindow(QWidget *parent)
     dock_Outliner->setMaximumWidth(350);
     dock_TractEditor->setMaximumWidth(350);
 
+    outlinerWgt->setObjLoaderAction(act_LoadObj);
+
     /** Connect **/
 
-    connect(act_OpenDoc, &QAction::triggered, this, &MainWindow::on_OpenAction_clicked);
+    connect(act_LoadObj, &QAction::triggered, this, &MainWindow::on_OpenAction_clicked);
     connect(outlinerWgt, SIGNAL(need_update()), glWgt, SLOT(update()));
     connect(dock_Outliner,SIGNAL(close()),this,SLOT(hideOutliner()));
     connect(act_Align, &QAction::triggered, this, &MainWindow::on_AlignAction_clicked);
@@ -108,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     /** Place **/
     menu->addAction(act_NewDoc);
-    menu->addAction(act_OpenDoc);
+    menu->addAction(act_LoadObj);
     menu->addAction(act_SaveDoc);
     menu->addAction(act_SaveDocAs);
     menu->addAction(act_ResetDoc);
@@ -135,7 +137,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->menubar->addMenu(menu_About);
 
     ui->toolBar->addAction(act_NewDoc);
-    ui->toolBar->addAction(act_OpenDoc);
+    ui->toolBar->addAction(act_LoadObj);
     ui->toolBar->addAction(act_SaveDoc);
     ui->toolBar->addAction(act_SaveDocAs);
     ui->toolBar->addAction(act_ResetDoc);

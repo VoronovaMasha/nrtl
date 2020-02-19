@@ -52,10 +52,10 @@ private:
     QTreeWidget *tree;
     QTreeWidgetItem *currentIt;
     QTreeWidgetItem *mainMesh;
-
     QPushButton *addStepBtn;
-
     QVector<Step*> v_steps;
+
+    QAction* act_loadObj;
 
     int how_many_step = 1;
 
@@ -65,6 +65,7 @@ public:
     OutlinerWidget();
     void addMainModel(MeshModel* mesh,QString name);
     void addCut(MeshModel* mesh,QString name);
+    void setObjLoaderAction(QAction* obj_loader) { act_loadObj = obj_loader; }
 private slots:
     void update();
     void add_step();

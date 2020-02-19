@@ -24,6 +24,8 @@ OutlinerWidget::OutlinerWidget()
     addStepBtn = new QPushButton("Add step");
     mainMesh=new QTreeWidgetItem();
 
+    act_loadObj = nullptr;
+
     /** Setup **/
 
     tree->header()->hide();
@@ -58,7 +60,7 @@ void OutlinerWidget::addMainModel(MeshModel *mesh, QString name)
     RMeshModel::Name::set(id,name);
     ROutlinerData::MainMesh::set(id);
     /*! \todo: this logic MUST be in the model, not in the view */
-    make_step_current();
+//    make_step_current();
 
     update();
     emit need_update();
@@ -75,7 +77,6 @@ void OutlinerWidget::addCut(MeshModel *mesh,QString name)
     DataId id=RMeshModel::create(mesh);
     RMeshModel::Name::set(id,name);
     RStep::MeshCut::set(ROutlinerData::WorkingStep::get(),id);
-    RMeshModel::Visibility::makeVisibleOnlyOne(id);
     update();
     emit need_update();
 }
@@ -156,10 +157,15 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
 {
     QMenu * menu = new QMenu(this);
     currentIt = item;
+
     if(item==mainMesh)
     {
-        QAction * loadMainMesh = new QAction("Load", this);
-        menu->addAction(loadMainMesh);
+        if(act_loadObj == nullptr)
+        {
+            act_loadObj = new QAction("Load", this);
+            act_loadObj->setDisabled(true);
+        }
+        menu->addAction(act_loadObj);
 
         DataId main_mesh_id = ROutlinerData::MainMesh::get();
         if(main_mesh_id != NONE)
@@ -179,7 +185,6 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
             menu->addAction(makeVisible);
             menu->addAction(deleteMainMesh);
         }
-        connect(loadMainMesh, SIGNAL(triggered()), this, SLOT(loadMainMesh()));
         menu->popup(tree->viewport()->mapToGlobal(globalPos));
     }
     for(auto i = 0; i < v_steps.size(); i++)
@@ -398,6 +403,9 @@ void OutlinerWidget::make_step_current()
     DataId id = RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
     if(id!=NONE)
         RMeshModel::Visibility::set(id, true);
+
+    /*! \todo: make sections visible */
+
     update();
     emit need_update();
 }
