@@ -12,7 +12,10 @@
 #include<QOpenGLWidget>
 #include<QSettings>
 #include<oglareawidget.h>
+#include<QThread>
+#include<QLabel>
 
+#include"MeshAlgorithm.h"
 #include"outlinerwidget.h"
 #include"resourcemanager.h"
 
@@ -21,6 +24,26 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class MeshLoader : public QObject
+{
+    Q_OBJECT
+public:
+    explicit MeshLoader(QObject* parent = nullptr) :
+        QObject(parent)
+    {
+    }
+public slots:
+
+    void loadMesh()
+    {
+        qDebug() << "Start loading mesh";
+        MeshModelLoader::OBJ::loadMesh();
+        qDebug() << "Finish loading mesh";
+        emit loadingFinished();
+    }
+signals:
+    void loadingFinished();
+};
 
 
 class MainWindow : public QMainWindow
@@ -37,7 +60,9 @@ private slots:
     void on_OpenAction_clicked();
     void on_AlignAction_clicked();
     void alligning(QVector<QVector3D> a,QVector<QVector3D> b, DataId mesh_id1, DataId mesh_id2);
-
+    void loadMeshSlot();
+signals:
+    void startMeshLoading();
 private:
     Ui::MainWindow *ui;
 
@@ -80,5 +105,8 @@ private:
     ResourceManager* res_man_wnd;
 
     QSettings* settings;
+
+    MeshLoader* loader;
+    QThread thread, threadProgress;
 };
 #endif // MAINWINDOW_H

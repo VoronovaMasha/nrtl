@@ -4,12 +4,24 @@
 
 
 QString MeshModelLoader::_error_string = QString("Error");
+volatile MeshModelLoader::Status MeshModelLoader::_status = WAIT;
+volatile float  MeshModelLoader::_progress = 0;
+QString MeshModelLoader::_path = "";
+bool MeshModelLoader::centerize = true;
+SimpleMesh* MeshModelLoader::mesh = nullptr;
+MeshModel* MeshModelLoader::meshModel = nullptr;
 
-MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
+void MeshModelLoader::OBJ::loadMesh()
 {
+    static QMutex mtx;
+    mtx.lock();
+    _status = RUN;
+    _progress = 0;
+    mtx.unlock();
+
     try
     {
-        QFile objFile(path);
+        QFile objFile(_path);
         QVector<QVector3D> coords;
         QVector<QVector2D> texcoords;
         QVector<VertexData> vertexes;
@@ -18,12 +30,17 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
         if(!objFile.exists())
         {
             _error_string = "Did not found \".obj\" file.";
-            return nullptr;
+            mesh = nullptr;
+            return;
         }
         objFile.open(QIODevice::ReadOnly);
         QTextStream input(&objFile);
         QString picture;
         bool is_picture=false;
+        mtx.lock();
+        _progress = 0.1;
+        mtx.unlock();
+
         while(!input.atEnd())
         {
             QString str=input.readLine();
@@ -33,16 +50,18 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
                 if(list.size()!=2)
                 {
                     _error_string = "Bad \".obj\" file (problems in string \"mtllib ...\").";
-                    return nullptr;
+                    mesh = nullptr;
+                    return;
                 }
-                QFileInfo info(path);
+                QFileInfo info(_path);
                 if(list[1].startsWith("./"))
                     list[1].remove(0,2);
                 QFile mtlFile(info.absolutePath()+"/"+list[1]);
                 if(!mtlFile.exists())
                 {
                     _error_string = "Did not found \".mtl\" file.";
-                    return nullptr;
+                    mesh = nullptr;
+                    return;
                 }
                 mtlFile.open(QIODevice::ReadOnly);
                 QTextStream input2(&mtlFile);
@@ -55,7 +74,8 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
                         if(list2.size()!=2)
                         {
                             _error_string = "Bad \".mtl\" file (problems in string \"map_Kd ...\").";
-                            return nullptr;
+                            mesh = nullptr;
+                            return;
                         }
                         if(list2[1].startsWith("./"))
                             list2[1].remove(0,2);
@@ -64,6 +84,9 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
                         mtlFile.close();
                         break;
                     }
+                    mtx.lock();
+                    _progress = 0.3;
+                    mtx.unlock();
                 }
                 continue;
             }
@@ -72,7 +95,8 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
                 if(list.size()!=4 && list.size()!=7)
                 {
                     _error_string = "Bad \".obj\" file (problems in string \"v ...\").";
-                    return nullptr;
+                    mesh = nullptr;
+                    return;
                 }
                 coords.append(QVector3D((list[1].toFloat()/50.f),(list[2].toFloat()/50.f),(list[3].toFloat()/50.f)));
                 continue;
@@ -82,7 +106,8 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
                 if(list.size()!=3)
                 {
                     _error_string = "Bad \".obj\" file (problems in string \"vt ...\").";
-                    return nullptr;
+                    mesh = nullptr;
+                    return;
                 }
                 texcoords.append(QVector2D(list[1].toFloat(),list[2].toFloat()));
                 continue;
@@ -92,7 +117,8 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
                 if(list.size()!=4)
                 {
                     _error_string = "Bad \".obj\" file (problems in string \"f ...\").";
-                    return nullptr;
+                    mesh = nullptr;
+                    return;
                 }
                 QStringList vert1=list[1].split("/");
                 QStringList vert2=list[2].split("/");
@@ -161,30 +187,30 @@ MeshModel* MeshModelLoader::OBJ::loadMesh(const QString& path, bool centerize)
             }
         }
         objFile.close();
-        MeshModel* obj;
-        if(is_picture)
-            obj=new MeshModel(vertexes,indexes,QImage(picture));
-        else
-            obj=new MeshModel(vertexes,indexes,QImage(":/cube.png"));
-        obj->polygons=polygons;
-        obj->coords=coords;
+        mtx.lock();
+        _progress += 0.4;
+        mtx.unlock();
 
-        if(centerize)
-        {
-            double x=0.f,y=0.f,z=0.f;
-            for(int i=0;i<coords.size();i++)
-            {
-                x+=coords[i].x()/coords.size();
-                y+=coords[i].y()/coords.size();
-                z+=coords[i].z()/coords.size();
-            }
-            obj->translate(QVector3D(-x,-y,-z));
-        }
-        return obj;
+        if(is_picture)
+            mesh=new SimpleMesh(vertexes,indexes,QImage(picture));
+        else
+            mesh=new SimpleMesh(vertexes,indexes,QImage(":/cube.png"));
+        mesh->polygons=polygons;
+        mesh->coords=coords;
+        mtx.lock();
+        _status = WAIT;
+        _progress = 0.99;
+        mtx.unlock();
     }
     catch(...)
     {
         _error_string = "There was an error during loading the model. Maybe the reason is the limits of your RAM.";
-        return nullptr;
+
+        mtx.lock();
+        _status = WAIT;
+        _progress = 0;
+        mtx.unlock();
+        mesh = nullptr;
+        return;
     }
 }

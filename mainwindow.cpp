@@ -7,8 +7,12 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QDebug>
+#include <QLabel>
 #include "MeshAlgorithm.h"
 #include "allignwindow.h"
+
+
+#define MULTITHREADING 1
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -110,6 +114,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(act_ResMan, &QAction::triggered, res_man_wnd, &ResourceManager::show);
 
+//    connect(&thread, &QThread::started, loader, &MeshLoader::loadMesh);
+    connect(&thread, &QThread::finished, [](){ qDebug() << "Thread finished "; });
+
     /** Place **/
     menu->addAction(act_NewDoc);
     menu->addAction(act_LoadObj);
@@ -191,7 +198,21 @@ void MainWindow::on_OpenAction_clicked()
     }
     if(!filename.isEmpty())
     {
-        MeshModel* md = MeshModelLoader::OBJ::loadMesh(filename);
+        MeshModelLoader::setPath(filename);
+#if MULTITHREADING==1
+        loader = new MeshLoader();
+        connect(&thread, &QThread::finished, loader, &QObject::deleteLater);
+        connect(this, &MainWindow::startMeshLoading, loader, &MeshLoader::loadMesh);
+        connect(loader, &MeshLoader::loadingFinished, this, &MainWindow::loadMeshSlot);
+        loader->moveToThread(&thread);
+        thread.start();
+        emit startMeshLoading();
+
+#else
+        MeshModelLoader::OBJ::loadMesh();
+
+        MeshModel* md = MeshModelLoader::getMesh();
+
         if(md != nullptr)
         {
             QFileInfo info(filename);
@@ -206,6 +227,29 @@ void MainWindow::on_OpenAction_clicked()
         {
             QMessageBox::warning(this, "Warning", MeshModelLoader::errorString());
         }
+#endif
+    }
+}
+
+void MainWindow::loadMeshSlot()
+{
+    thread.quit();
+    thread.wait();
+    MeshModel* md = MeshModelLoader::getMesh();
+
+    if(md != nullptr)
+    {
+        QFileInfo info(MeshModelLoader::getPath());
+        NrtlManager::createTransaction(NrtlManager::SYNC);
+        if(ROutlinerData::WorkingStep::get()==NONE)
+            outlinerWgt->addMainModel(md,info.fileName());
+        else
+            outlinerWgt->addCut(md,info.fileName());
+        NrtlManager::commitTransaction();
+    }
+    else
+    {
+        QMessageBox::warning(this, "Warning", MeshModelLoader::errorString());
     }
 }
 
@@ -229,9 +273,6 @@ void MainWindow::on_AlignAction_clicked()
         QMessageBox::warning(this, "Warning", "Before alligning load cut to current step.");
         return;
     }
-
-
-
     AllignWindow *dialog=new AllignWindow(RMeshModel::getMeshData(ROutlinerData::MainMesh::get()),
                                           RMeshModel::getMeshData(RStep::MeshCut::get(ROutlinerData::WorkingStep::get())),
                                           ROutlinerData::MainMesh::get(),
