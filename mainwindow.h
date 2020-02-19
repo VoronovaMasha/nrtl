@@ -14,6 +14,7 @@
 #include<oglareawidget.h>
 #include<QThread>
 #include<QLabel>
+#include<QProgressBar>
 
 #include"MeshAlgorithm.h"
 #include"outlinerwidget.h"
@@ -143,5 +144,6 @@ private:
     StatusListener *listener;
     QWidget* statusWgt;
     QLabel* statusLbl;
+    QProgressBar* progressBar;
 };
 #endif // MAINWINDOW_H

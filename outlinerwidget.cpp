@@ -357,9 +357,12 @@ void OutlinerWidget::change(QString s)
 void OutlinerWidget::make_step_current()
 {
     DataId main_mesh_id = ROutlinerData::MainMesh::get();
-    if(RMeshModel::Visibility::get(main_mesh_id))
-        RMeshModel::Visibility::makeVisibleOnlyOne(main_mesh_id);
-    else RMeshModel::Visibility::makeAllUnvisible();
+    if(main_mesh_id != NONE)
+    {
+        if(RMeshModel::Visibility::get(main_mesh_id))
+            RMeshModel::Visibility::makeVisibleOnlyOne(main_mesh_id);
+        else RMeshModel::Visibility::makeAllUnvisible();
+    }
 
     for(auto i = 0; i < v_steps.size(); i++)
     {

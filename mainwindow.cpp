@@ -67,8 +67,9 @@ MainWindow::MainWindow(QWidget *parent)
     tLoader = new QThread();
     tListener = new QThread();
 
-    statusWgt = new QWidget();
-    statusLbl = new QLabel();
+    statusWgt = new QWidget(this);
+    statusLbl = new QLabel("Loading...");
+    progressBar = new QProgressBar();
     QVBoxLayout* lout = new QVBoxLayout();
 
     /** Setup **/
@@ -112,9 +113,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     outlinerWgt->setObjLoaderAction(act_LoadObj);
 
-    statusWgt->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-    statusWgt->setWindowTitle("Loading Mesh...");
+    statusWgt->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::Popup | Qt::Dialog );
+    statusWgt->setWindowModality(Qt::WindowModal);
+    statusWgt->setWindowTitle("Loading...");
     statusWgt->resize(200, 100);
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(100);
 
     /** Connect **/
 
@@ -173,7 +177,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->toolBar->addAction(act_ConnectBorders);
 
-    lout->addWidget(statusLbl);
+    lout->addWidget(statusLbl, Qt::AlignCenter);
+    lout->addWidget(progressBar);
     statusWgt->setLayout(lout);
 
     view->setScene(scene);
@@ -226,7 +231,7 @@ void MainWindow::on_OpenAction_clicked()
         connect(loader, &MeshLoader::loadingFinished, this, &MainWindow::loadMeshSlot);
 
         connect(listener, &StatusListener::sendStatus,
-                [this](int st) { statusLbl->setText(QString::number(st)); qDebug() << "listener"; });
+                [this](int st) { progressBar->setValue(st); qDebug() << "listener"; });
 
         tLoader->start();
         tListener->start();
