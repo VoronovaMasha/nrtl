@@ -24,6 +24,36 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+class StatusListener : public QObject
+{
+    Q_OBJECT
+public:
+    explicit StatusListener(QThread* thread, std::function<int()> func, QObject* parent = nullptr) :
+        QObject(parent), thread_to_listen(thread), status_func(func)
+    {
+        connect(thread_to_listen, &QThread::started, this, &StatusListener::listen);
+    }
+public slots:
+    void listen()
+    {
+        if(thread_to_listen != nullptr)
+            while(thread_to_listen->isRunning())
+            {
+                if(prev_status != status_func())
+                {
+                    prev_status = status_func();
+                    emit sendStatus(prev_status);
+                }
+            }
+    }
+signals:
+    void sendStatus(int);
+private:
+    QThread* thread_to_listen;
+    std::function<int()> status_func;
+    int prev_status;
+};
+
 class MeshLoader : public QObject
 {
     Q_OBJECT
@@ -106,7 +136,10 @@ private:
 
     QSettings* settings;
 
+
     MeshLoader* loader;
-    QThread thread, threadProgress;
+    QThread *tLoader, *tListener;
+    StatusListener *listener;
+    QWidget* statusWgt;
 };
 #endif // MAINWINDOW_H

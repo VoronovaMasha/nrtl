@@ -39,7 +39,7 @@ public:
         return _status;
     }
 
-    static float getProgress()
+    static int getProgress()
     {
         return _progress;
     }
@@ -81,7 +81,7 @@ public:
 private:
     static QString         _error_string;
     static volatile Status _status;
-    static volatile float  _progress;  //from 0 to 1
+    static volatile int  _progress;  //from 0 to 1
     static QString _path;
     static bool centerize;
 

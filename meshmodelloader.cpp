@@ -5,7 +5,7 @@
 
 QString MeshModelLoader::_error_string = QString("Error");
 volatile MeshModelLoader::Status MeshModelLoader::_status = WAIT;
-volatile float  MeshModelLoader::_progress = 0;
+volatile int  MeshModelLoader::_progress = 0;
 QString MeshModelLoader::_path = "";
 bool MeshModelLoader::centerize = true;
 SimpleMesh* MeshModelLoader::mesh = nullptr;
@@ -38,7 +38,7 @@ void MeshModelLoader::OBJ::loadMesh()
         QString picture;
         bool is_picture=false;
         mtx.lock();
-        _progress = 0.1;
+        _progress = 10;
         mtx.unlock();
 
         while(!input.atEnd())
@@ -84,10 +84,11 @@ void MeshModelLoader::OBJ::loadMesh()
                         mtlFile.close();
                         break;
                     }
-                    mtx.lock();
-                    _progress = 0.3;
-                    mtx.unlock();
+
                 }
+                mtx.lock();
+                _progress = 30;
+                mtx.unlock();
                 continue;
             }
             if(list[0]=="v")
@@ -188,7 +189,7 @@ void MeshModelLoader::OBJ::loadMesh()
         }
         objFile.close();
         mtx.lock();
-        _progress += 0.4;
+        _progress += 40;
         mtx.unlock();
 
         if(is_picture)
@@ -199,7 +200,7 @@ void MeshModelLoader::OBJ::loadMesh()
         mesh->coords=coords;
         mtx.lock();
         _status = WAIT;
-        _progress = 0.99;
+        _progress = 99;
         mtx.unlock();
     }
     catch(...)

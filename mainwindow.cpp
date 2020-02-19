@@ -64,6 +64,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     settings = new QSettings("Higher School of Economics", "Nerve Tracts Lab", this);
 
+    tLoader = new QThread();
+    tListener = new QThread();
+
+    statusWgt = new QWidget();
+
     /** Setup **/
     this->setWindowTitle("Nerve Tracts Lab");
 
@@ -105,17 +110,18 @@ MainWindow::MainWindow(QWidget *parent)
 
     outlinerWgt->setObjLoaderAction(act_LoadObj);
 
+    statusWgt->setWindowFlags(Qt::WindowStaysOnTopHint);
+
     /** Connect **/
 
     connect(act_LoadObj, &QAction::triggered, this, &MainWindow::on_OpenAction_clicked);
     connect(outlinerWgt, SIGNAL(need_update()), glWgt, SLOT(update()));
     connect(dock_Outliner,SIGNAL(close()),this,SLOT(hideOutliner()));
     connect(act_Align, &QAction::triggered, this, &MainWindow::on_AlignAction_clicked);
-
     connect(act_ResMan, &QAction::triggered, res_man_wnd, &ResourceManager::show);
 
-//    connect(&thread, &QThread::started, loader, &MeshLoader::loadMesh);
-    connect(&thread, &QThread::finished, [](){ qDebug() << "Thread finished "; });
+    connect(tListener, &QThread::finished, [](){ qDebug() << "Listener Thread finished "; });
+    connect(tLoader, &QThread::finished, [](){ qDebug() << "Loader Thread finished "; });
 
     /** Place **/
     menu->addAction(act_NewDoc);
@@ -200,13 +206,31 @@ void MainWindow::on_OpenAction_clicked()
     {
         MeshModelLoader::setPath(filename);
 #if MULTITHREADING==1
+
+        QLabel* lbl = new QLabel();
+        QVBoxLayout* lout = new QVBoxLayout();
         loader = new MeshLoader();
-        connect(&thread, &QThread::finished, loader, &QObject::deleteLater);
+        listener = new StatusListener(tLoader, MeshModelLoader::getProgress);
+
+        loader->moveToThread(tLoader);
+        listener->moveToThread(tListener);
+
+        connect(tLoader, &QThread::finished, loader, &QObject::deleteLater);
+        connect(tListener, &QThread::finished, listener, &QObject::deleteLater);
+
         connect(this, &MainWindow::startMeshLoading, loader, &MeshLoader::loadMesh);
         connect(loader, &MeshLoader::loadingFinished, this, &MainWindow::loadMeshSlot);
-        loader->moveToThread(&thread);
-        thread.start();
+
+        lbl->setText("Text");
+        connect(listener, &StatusListener::sendStatus,
+                [lbl](int st) { lbl->setText(QString::number(st)); qDebug() << "listener"; });
+
+        lout->addWidget(lbl);
+        statusWgt->setLayout(lout);
+
+        tLoader->start();
         emit startMeshLoading();
+        statusWgt->show();
 
 #else
         MeshModelLoader::OBJ::loadMesh();
@@ -233,8 +257,14 @@ void MainWindow::on_OpenAction_clicked()
 
 void MainWindow::loadMeshSlot()
 {
-    thread.quit();
-    thread.wait();
+    tLoader->quit();
+    tLoader->wait();
+
+    tListener->quit();
+    tListener->wait();
+
+    statusWgt->close();
+
     MeshModel* md = MeshModelLoader::getMesh();
 
     if(md != nullptr)
