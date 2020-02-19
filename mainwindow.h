@@ -10,6 +10,7 @@
 #include<QAction>
 #include<QBrush>
 #include<QOpenGLWidget>
+#include<QSettings>
 #include<oglareawidget.h>
 
 #include"outlinerwidget.h"
@@ -78,5 +79,6 @@ private:
 
     ResourceManager* res_man_wnd;
 
+    QSettings* settings;
 };
 #endif // MAINWINDOW_H

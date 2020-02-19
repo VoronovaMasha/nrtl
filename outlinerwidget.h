@@ -74,7 +74,6 @@ private slots:
     void add_new_section();
     void rename();
     void deleteMesh();
-    void loadMainMesh();
     void change(QString);
     void make_step_current();
     void makeMainMeshVisible();

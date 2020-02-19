@@ -58,6 +58,8 @@ MainWindow::MainWindow(QWidget *parent)
     res_man_wnd = new ResourceManager(this);
     res_man_wnd->close();
 
+    settings = new QSettings("Higher School of Economics", "Nerve Tracts Lab", this);
+
     /** Setup **/
     this->setWindowTitle("Nerve Tracts Lab");
 
@@ -177,9 +179,16 @@ void MainWindow::setModel(NrtlModel* md)
 
 void MainWindow::on_OpenAction_clicked()
 {
+    QString prev_dir_path = settings->value(NrtlSettings::PREV_DIR_VAR, QDir::homePath()).toString();
     QString filename = QFileDialog::getOpenFileName(this,
-                       tr("Open Mesh"), QDir::currentPath(),
+                       tr("Open Mesh"), prev_dir_path,
                        tr("Model File(*.obj)"));
+
+    if(!filename.isEmpty())
+    {
+        QDir prev_dir;
+        settings->setValue(NrtlSettings::PREV_DIR_VAR, prev_dir.absoluteFilePath(filename));
+    }
     if(!filename.isEmpty())
     {
         MeshModel* md = MeshModelLoader::OBJ::loadMesh(filename);

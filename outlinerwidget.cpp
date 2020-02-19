@@ -274,7 +274,7 @@ void OutlinerWidget :: add_new_section()
     }*/
 }
 
-void OutlinerWidget :: rename()
+void OutlinerWidget::rename()
 {
     QString s=currentIt->text(0);
     if(s.endsWith(QString("(current)")))
@@ -319,38 +319,7 @@ void OutlinerWidget::deleteMesh()
     emit need_update();
 }
 
-void OutlinerWidget::loadMainMesh()
-{
-    ROutlinerData::WorkingStep::set(NONE);
-    QString filename = QFileDialog::getOpenFileName(this,
-                       tr("Open Mesh"), QDir::currentPath(),
-                       tr("Model File(*.obj)"));
-    if(!filename.isEmpty())
-    {
-        MeshModel* md = MeshModelLoader::OBJ::loadMesh(filename);
-        if(md != nullptr)
-        {
-            QFileInfo info(filename);
-            NrtlManager::createTransaction(NrtlManager::SYNC);
-            DataId old_id=ROutlinerData::MainMesh::get();
-            if(old_id!=NONE)
-                RMeshModel::deleteMesh(old_id);
-            DataId id=RMeshModel::create(md);
-            RMeshModel::Name::set(id,info.fileName());
-            ROutlinerData::MainMesh::set(id);
-            RMeshModel::Visibility::makeVisibleOnlyOne(id);
-            NrtlManager::commitTransaction();
-        }
-        else
-        {
-            QMessageBox::warning(this, "Warning", MeshModelLoader::errorString());
-        }
-    }
-    update();
-    emit need_update();
-}
-
-void OutlinerWidget :: change(QString s)
+void OutlinerWidget::change(QString s)
 {
 
     QTreeWidgetItem *item = tree->currentItem();

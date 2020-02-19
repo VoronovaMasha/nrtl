@@ -14,6 +14,9 @@ int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QApplication a(argc, argv);
+    a.setApplicationName("Nerve Tracts Lab");
+    a.setOrganizationName("Higher School of Economics");
+    a.setOrganizationDomain("hse.ru");
     QSurfaceFormat format;
     format.setVersion(2,1);
     format.setProfile(QSurfaceFormat::CoreProfile);
