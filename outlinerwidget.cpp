@@ -45,15 +45,20 @@ OutlinerWidget::OutlinerWidget()
     lout->addWidget(addStepBtn);
 }
 
-void OutlinerWidget::addMainModel(MeshModel *mesh,QString name)
+void OutlinerWidget::addMainModel(MeshModel *mesh, QString name)
 {
-    DataId old_id=ROutlinerData::MainMesh::get();
+    DataId old_id = ROutlinerData::MainMesh::get();
+
+    /// \todo: add warning in case of od mesh deleting
+
     if(old_id!=NONE)
         RMeshModel::deleteMesh(old_id);
-    DataId id=RMeshModel::create(mesh);
+
+    DataId id = RMeshModel::create(mesh);
     RMeshModel::Name::set(id,name);
     ROutlinerData::MainMesh::set(id);
     RMeshModel::Visibility::makeVisibleOnlyOne(id);
+
     update();
     emit need_update();
 }
@@ -61,6 +66,9 @@ void OutlinerWidget::addMainModel(MeshModel *mesh,QString name)
 void OutlinerWidget::addCut(MeshModel *mesh,QString name)
 {
     DataId old_id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
+
+    /// \todo: add warning in case of od mesh deleting
+
     if(old_id!=NONE)
         RMeshModel::deleteMesh(old_id);
     DataId id=RMeshModel::create(mesh);
@@ -127,7 +135,7 @@ void OutlinerWidget::update()
     }
 }
 
-void OutlinerWidget :: add_step()
+void OutlinerWidget::add_step()
 {
     DataId id=RStep::create("Step " + QString::number(how_many_step));
     ROutlinerData::StepList::add(id);
@@ -144,7 +152,7 @@ void OutlinerWidget::slotCustomMenuRequested(QPoint pos)
     showContextMenu(currentIt,pos);
 }
 
-void OutlinerWidget :: showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos)
+void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos)
 {
     QMenu * menu = new QMenu(this);
     currentIt = item;
@@ -152,17 +160,24 @@ void OutlinerWidget :: showContextMenu(QTreeWidgetItem* item, const QPoint& glob
     {
         QAction * loadMainMesh = new QAction("Load", this);
         menu->addAction(loadMainMesh);
-        if(item->text(0)!="No main mesh")
+
+        DataId main_mesh_id = ROutlinerData::MainMesh::get();
+        if(main_mesh_id != NONE)
         {
-            QAction * addDevice = new QAction("Rename", this);
-            QAction * makeVisible = new QAction("Make Visible", this);
-            QAction * deleteMainMesh = new QAction("Delete", this);
-            menu->addAction(addDevice);
-            menu->addAction(makeVisible);
-            menu->addAction(deleteMainMesh);
+            QAction* addDevice = new QAction("Rename", this);
+
+            QString vis = "Make ";
+            vis += RMeshModel::Visibility::get(main_mesh_id) ? "invisible" : "visible";
+            QAction* makeVisible = new QAction(vis, this);
+            QAction* deleteMainMesh = new QAction("Delete", this);
+
             connect(addDevice, SIGNAL(triggered()), this, SLOT(rename()));
             connect(makeVisible, SIGNAL(triggered()), this, SLOT(makeMainMeshVisible()));
             connect(deleteMainMesh, SIGNAL(triggered()), this, SLOT(deleteMesh()));
+
+            menu->addAction(addDevice);
+            menu->addAction(makeVisible);
+            menu->addAction(deleteMainMesh);
         }
         connect(loadMainMesh, SIGNAL(triggered()), this, SLOT(loadMainMesh()));
         menu->popup(tree->viewport()->mapToGlobal(globalPos));
@@ -386,12 +401,8 @@ void OutlinerWidget::make_step_current()
 
 void OutlinerWidget::makeMainMeshVisible()
 {
-    ROutlinerData::WorkingStep::set(NONE);
-    DataId id=ROutlinerData::MainMesh::get();
-    if(id!=NONE)
-        RMeshModel::Visibility::makeVisibleOnlyOne(id);
-    else
-        RMeshModel::Visibility::makeAllUnvisible();
+    DataId id = ROutlinerData::MainMesh::get();
+    RMeshModel::Visibility::set(id, !RMeshModel::Visibility::get(id));
     update();
     emit need_update();
 }

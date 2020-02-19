@@ -12,7 +12,7 @@
 class Section : public QTreeWidgetItem
 {
 public:
-    unsigned int id;
+    DataId id;
     Section():QTreeWidgetItem(){}
 };
 
@@ -22,7 +22,7 @@ class Step : public QTreeWidgetItem
 {
 private:
 public:
-     unsigned int id;
+     DataId id;
      int how_many_section = 1;
      QTreeWidgetItem *cut;
      QTreeWidgetItem *sections;
