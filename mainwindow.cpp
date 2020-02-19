@@ -218,8 +218,11 @@ void MainWindow::on_AlignAction_clicked()
         QMessageBox::warning(this, "Warning", "Before alligning load cut to current step.");
         return;
     }
-    AllignWindow *dialog=new AllignWindow(MeshData::get().getElement(ROutlinerData::MainMesh::get()),
-                                          MeshData::get().getElement(RStep::MeshCut::get(ROutlinerData::WorkingStep::get())),
+
+
+
+    AllignWindow *dialog=new AllignWindow(RMeshModel::getMeshData(ROutlinerData::MainMesh::get()),
+                                          RMeshModel::getMeshData(RStep::MeshCut::get(ROutlinerData::WorkingStep::get())),
                                           ROutlinerData::MainMesh::get(),
                                           RStep::MeshCut::get(ROutlinerData::WorkingStep::get()));
     connect (dialog, SIGNAL (ok(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)),
