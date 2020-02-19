@@ -16,24 +16,33 @@
 
 OutlinerWidget::OutlinerWidget()
 {
-    this->
+    /** Create **/
+
     currentIt = nullptr;
-    box = new QVBoxLayout(this);
+    lout = new QVBoxLayout(this);
     tree = new QTreeWidget();
+    addStepBtn = new QPushButton("Add step");
+    mainMesh=new QTreeWidgetItem();
+
+    /** Setup **/
+
     tree->header()->hide();
     tree->clear();
-    but_1 = new QPushButton("Add step");
-    box->addWidget(tree);
-    box->addWidget(but_1);
-    connect(but_1,SIGNAL(clicked()),this,SLOT(add_step()));
-    tree->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(tree, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotCustomMenuRequested(QPoint)));
     QString name_step = "No main mesh";
-    mainMesh=new QTreeWidgetItem();
     mainMesh->setText(0,name_step);
-    tree->addTopLevelItem(mainMesh);
+    tree->setContextMenuPolicy(Qt::CustomContextMenu);
 
+    /** Connect **/
+
+    connect(addStepBtn,SIGNAL(clicked()),this,SLOT(add_step()));
     connect(tree, &QTreeWidget::itemDoubleClicked, this, &OutlinerWidget::on_treeItem_doubleClicked);
+    connect(tree, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotCustomMenuRequested(QPoint)));
+
+    /** Place* */
+
+    tree->addTopLevelItem(mainMesh);
+    lout->addWidget(tree);
+    lout->addWidget(addStepBtn);
 }
 
 void OutlinerWidget::addMainModel(MeshModel *mesh,QString name)

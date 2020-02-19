@@ -47,13 +47,18 @@ class OutlinerWidget : public QWidget
 {
 Q_OBJECT
 private:
+    QVBoxLayout *lout;
+
     QTreeWidget *tree;
-    QVBoxLayout *box;
-    QPushButton *but_1;
-    QVector<Step*> v_steps;
-    int how_many_step = 1;
     QTreeWidgetItem *currentIt;
     QTreeWidgetItem *mainMesh;
+
+    QPushButton *addStepBtn;
+
+    QVector<Step*> v_steps;
+
+    int how_many_step = 1;
+
 signals:
     void need_update();
 public:
