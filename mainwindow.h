@@ -41,6 +41,7 @@ public slots:
             {
                 if(prev_status != status_func())
                 {
+                    qDebug() << __func__;
                     prev_status = status_func();
                     emit sendStatus(prev_status);
                 }
@@ -141,5 +142,6 @@ private:
     QThread *tLoader, *tListener;
     StatusListener *listener;
     QWidget* statusWgt;
+    QLabel* statusLbl;
 };
 #endif // MAINWINDOW_H

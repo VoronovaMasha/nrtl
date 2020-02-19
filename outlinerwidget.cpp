@@ -142,6 +142,7 @@ void OutlinerWidget::add_step()
     DataId id = RStep::create("Step " + QString::number(how_many_step));
     ROutlinerData::StepList::add(id);
     ROutlinerData::WorkingStep::set(id);
+    make_step_current();
     update();
     emit need_update();
 }

@@ -68,6 +68,8 @@ MainWindow::MainWindow(QWidget *parent)
     tListener = new QThread();
 
     statusWgt = new QWidget();
+    statusLbl = new QLabel();
+    QVBoxLayout* lout = new QVBoxLayout();
 
     /** Setup **/
     this->setWindowTitle("Nerve Tracts Lab");
@@ -110,7 +112,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     outlinerWgt->setObjLoaderAction(act_LoadObj);
 
-    statusWgt->setWindowFlags(Qt::WindowStaysOnTopHint);
+    statusWgt->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    statusWgt->setWindowTitle("Loading Mesh...");
+    statusWgt->resize(200, 100);
 
     /** Connect **/
 
@@ -169,6 +173,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->toolBar->addAction(act_ConnectBorders);
 
+    lout->addWidget(statusLbl);
+    statusWgt->setLayout(lout);
+
     view->setScene(scene);
     this->setCentralWidget(glWgt);
     this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock_Outliner);
@@ -206,9 +213,6 @@ void MainWindow::on_OpenAction_clicked()
     {
         MeshModelLoader::setPath(filename);
 #if MULTITHREADING==1
-
-        QLabel* lbl = new QLabel();
-        QVBoxLayout* lout = new QVBoxLayout();
         loader = new MeshLoader();
         listener = new StatusListener(tLoader, MeshModelLoader::getProgress);
 
@@ -221,14 +225,11 @@ void MainWindow::on_OpenAction_clicked()
         connect(this, &MainWindow::startMeshLoading, loader, &MeshLoader::loadMesh);
         connect(loader, &MeshLoader::loadingFinished, this, &MainWindow::loadMeshSlot);
 
-        lbl->setText("Text");
         connect(listener, &StatusListener::sendStatus,
-                [lbl](int st) { lbl->setText(QString::number(st)); qDebug() << "listener"; });
-
-        lout->addWidget(lbl);
-        statusWgt->setLayout(lout);
+                [this](int st) { statusLbl->setText(QString::number(st)); qDebug() << "listener"; });
 
         tLoader->start();
+        tListener->start();
         emit startMeshLoading();
         statusWgt->show();
 
