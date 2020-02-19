@@ -49,7 +49,7 @@ void OutlinerWidget::addMainModel(MeshModel *mesh, QString name)
 {
     DataId old_id = ROutlinerData::MainMesh::get();
 
-    /// \todo: add warning in case of od mesh deleting
+    /// \todo: add warning in case of old mesh deleting
 
     if(old_id!=NONE)
         RMeshModel::deleteMesh(old_id);
@@ -57,7 +57,8 @@ void OutlinerWidget::addMainModel(MeshModel *mesh, QString name)
     DataId id = RMeshModel::create(mesh);
     RMeshModel::Name::set(id,name);
     ROutlinerData::MainMesh::set(id);
-    RMeshModel::Visibility::makeVisibleOnlyOne(id);
+    /*! \todo: this logic MUST be in the model, not in the view */
+    make_step_current();
 
     update();
     emit need_update();
@@ -67,7 +68,7 @@ void OutlinerWidget::addCut(MeshModel *mesh,QString name)
 {
     DataId old_id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
 
-    /// \todo: add warning in case of od mesh deleting
+    /// \todo: add warning in case of old mesh deleting
 
     if(old_id!=NONE)
         RMeshModel::deleteMesh(old_id);
@@ -137,10 +138,9 @@ void OutlinerWidget::update()
 
 void OutlinerWidget::add_step()
 {
-    DataId id=RStep::create("Step " + QString::number(how_many_step));
+    DataId id = RStep::create("Step " + QString::number(how_many_step));
     ROutlinerData::StepList::add(id);
     ROutlinerData::WorkingStep::set(id);
-    RMeshModel::Visibility::makeAllUnvisible();
     update();
     emit need_update();
 }
@@ -381,6 +381,11 @@ void OutlinerWidget :: change(QString s)
 
 void OutlinerWidget::make_step_current()
 {
+    DataId main_mesh_id = ROutlinerData::MainMesh::get();
+    if(RMeshModel::Visibility::get(main_mesh_id))
+        RMeshModel::Visibility::makeVisibleOnlyOne(main_mesh_id);
+    else RMeshModel::Visibility::makeAllUnvisible();
+
     for(auto i = 0; i < v_steps.size(); i++)
     {
         Step *q = v_steps[i];
@@ -390,11 +395,9 @@ void OutlinerWidget::make_step_current()
             break;
         }
     }
-    DataId id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
+    DataId id = RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
     if(id!=NONE)
-        RMeshModel::Visibility::makeVisibleOnlyOne(id);
-    else
-        RMeshModel::Visibility::makeAllUnvisible();
+        RMeshModel::Visibility::set(id, true);
     update();
     emit need_update();
 }
