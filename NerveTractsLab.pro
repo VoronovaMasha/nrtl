@@ -20,6 +20,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     ROutlinerData.cpp \
     alignmesh.cpp \
+    allignwidget.cpp \
+    allignwindow.cpp \
     main.cpp \
     mainwindow.cpp \
     meshmodel.cpp \
@@ -39,6 +41,8 @@ SOURCES += \
 HEADERS += \
     MeshAlgorithm.h \
     NrtlType.h \
+    allignwidget.h \
+    allignwindow.h \
     ivcontainer.h \
     mainwindow.h  \
     meshmodel.h \
@@ -51,6 +55,7 @@ HEADERS += \
     resourcemanager.h
 
 FORMS += \
+    allignwindow.ui \
     dialog.ui \
     mainwindow.ui
 

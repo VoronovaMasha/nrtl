@@ -2,7 +2,7 @@
 #define NRTLMANAGER_H
 
 #include <string>
-#include"nrtlmodel.h"
+#include "nrtlmodel.h"
 
 class TransactionSM
 {

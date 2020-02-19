@@ -1,4 +1,5 @@
 #include "MeshAlgorithm.h"
+#include "cmath"
 
 QMatrix4x4 AlignMesh::getAlignMatrix(QVector<QVector3D> dst, QVector<QVector3D> src)
 {
