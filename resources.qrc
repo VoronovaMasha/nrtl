@@ -33,6 +33,10 @@
         <file>icons/icon_save_as.png</file>
         <file>icons/icon_reset.png</file>
         <file>textures/cube.png</file>
+        <file>icons/icon_save_section.png</file>
+        <file>icons/icon_start_cutting.png</file>
+        <file>textures/cube2.png</file>
+        <file>textures/cube3.png</file>
     </qresource>
     <qresource prefix="/ogl">
         <file>shaders/fshader.fsh</file>

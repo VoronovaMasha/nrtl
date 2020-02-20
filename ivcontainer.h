@@ -47,6 +47,9 @@ public:
     void makeVisibleOnlyOne(DataId id);
     void makeAllUnvisible();
 
+    void makeFirst(DataId id);
+    void makeLast(DataId id);
+
 	DocType& create(bool visible=true);
 	DocType& allocate(bool visible = true);
 
@@ -202,6 +205,44 @@ void IVContainer<DocType>::makeAllUnvisible()
 }
 
 template<typename DocType>
+void IVContainer<DocType>::makeFirst(DataId id)
+{
+    uint32_t i=0;
+    for (; i < dataIdMask.size(); i++)
+    {
+        if(dataIdMask[i]==id)
+        {
+            data.insert(data.begin(),data[i]);
+            dataIdMask.insert(dataIdMask.begin(),dataIdMask[i]);
+            dataVisMask.insert(dataVisMask.begin(),dataVisMask[i]);
+            data.erase(data.begin()+i+1);
+            dataIdMask.erase(dataIdMask.begin()+i+1);
+            dataVisMask.erase(dataVisMask.begin()+i+1);
+            break;
+        }
+    }
+}
+
+template<typename DocType>
+void IVContainer<DocType>::makeLast(DataId id)
+{
+    uint32_t i=0;
+    for (; i < dataIdMask.size(); i++)
+    {
+        if(dataIdMask[i]==id)
+        {
+            data.push_back(data[i]);
+            dataIdMask.push_back(dataIdMask[i]);
+            dataVisMask.push_back(dataVisMask[i]);
+            data.erase(data.begin()+i);
+            dataIdMask.erase(dataIdMask.begin()+i);
+            dataVisMask.erase(dataVisMask.begin()+i);
+            break;
+        }
+    }
+}
+
+template<typename DocType>
 DataId IVContainer<DocType>::getId(const DocType& obj) const
 {
 	uint32_t pos = find(data, obj);
@@ -214,6 +255,8 @@ DocType IVContainer<DocType>::getElement(DataId id) const
     uint32_t pos = find(dataIdMask, id);
     return data[pos];
 }
+
+
 
 template<typename DocType>
 DocType& IVContainer<DocType>::create(bool visible)

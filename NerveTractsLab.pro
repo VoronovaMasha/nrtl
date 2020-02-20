@@ -37,7 +37,8 @@ SOURCES += \
     rgroupid.cpp \
     rmeshmodel.cpp \
     rsectionmodel.cpp \
-    rstep.cpp
+    rstep.cpp \
+    transparencydialog.cpp
 
 HEADERS += \
     MeshAlgorithm.h \
@@ -53,12 +54,14 @@ HEADERS += \
     outliner.h \
     outlinerwidget.h \
     renamestepdialog.h \
-    resourcemanager.h
+    resourcemanager.h \
+    transparencydialog.h
 
 FORMS += \
     allignwindow.ui \
     dialog.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    transparencydialog.ui
 
 RESOURCES += resources.qrc
 

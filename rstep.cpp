@@ -1,5 +1,5 @@
 #include "nrtlmanager.h"
-
+#include <vector>
 DataId RStep::create(const QString& name)
 {
     IStep* stp = new IStep(name);
@@ -55,13 +55,13 @@ bool RStep::SectionList::add(DataId step_id, DataId section_id)
 bool RStep::SectionList::remove(DataId step_id, DataId section_id)
 {
     auto lst = getStep(step_id)->meshSectionIds;
-    auto it = lst.begin();
-    for(; it != lst.end(); ++it)
+    int i=0;
+    for(;i<lst.size();i++)
     {
-        if((*it) == section_id)
+        if(lst[i]==section_id)
             break;
     }
-    getStep(step_id)->meshSectionIds.erase(it);
+    getStep(step_id)->meshSectionIds.erase(getStep(step_id)->meshSectionIds.begin()+i);
     auto _group = getStep(step_id)->section_group_map[section_id];
     getStep(step_id)->section_group_map.erase(section_id);
     getStep(step_id)->group_section_map[_group] = NONE;

@@ -93,6 +93,8 @@ private slots:
     void on_AlignAction_clicked();
     void alligning(QVector<QVector3D> a,QVector<QVector3D> b, DataId mesh_id1, DataId mesh_id2);
     void loadMeshSlot();
+    void SelectSection_clicked();
+    void SaveSection_clicked();
 signals:
     void startMeshLoading();
 private:
@@ -116,6 +118,7 @@ private:
 
     QAction* act_Align;
     QAction* act_SelectSection;
+    QAction* act_SaveSection;
     QAction* act_DrawPl;
     QAction* act_ConnectBorders;
     QAction* act_Outliner;

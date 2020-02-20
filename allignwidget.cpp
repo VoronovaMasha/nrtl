@@ -21,8 +21,7 @@ void AllignWidget::paintGL()
     program.setUniformValue("u_viewMatrix",ViewMatrix);
     program.setUniformValue("u_lightPosition",QVector4D(0.0,0.0,0.0,1.0));
     program.setUniformValue("u_lightPower",3*abs(z));
-    program.setUniformValue("u_alpha",1);
-    mesh->draw(&program,context()->functions());
+    mesh->draw(&program,context()->functions(),true);
     QMatrix4x4 matr;
     matr.setToIdentity();
     program.setUniformValue("u_modelMatrix", matr);
