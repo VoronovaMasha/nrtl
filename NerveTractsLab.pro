@@ -17,6 +17,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+WGTPATH = ./widgets
+
+INCLUDEPATH += $$WGTPATH
+
 SOURCES += \
     ROutlinerData.cpp \
     alignmesh.cpp \
@@ -38,7 +42,9 @@ SOURCES += \
     rmeshmodel.cpp \
     rsectionmodel.cpp \
     rstep.cpp \
-    transparencydialog.cpp
+    transparencydialog.cpp \
+    $$WGTPATH/groupeditorwidget.cpp \
+    $$WGTPATH/setcolor.cpp
 
 HEADERS += \
     MeshAlgorithm.h \
@@ -55,13 +61,16 @@ HEADERS += \
     outlinerwidget.h \
     renamestepdialog.h \
     resourcemanager.h \
-    transparencydialog.h
+    transparencydialog.h \
+    widgets/groupeditorwidget.h \
+    widgets/setcolor.h
 
 FORMS += \
     allignwindow.ui \
     dialog.ui \
     mainwindow.ui \
-    transparencydialog.ui
+    transparencydialog.ui \
+    widgets/setcolor.ui
 
 RESOURCES += resources.qrc
 

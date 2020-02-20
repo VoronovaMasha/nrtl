@@ -19,6 +19,7 @@
 #include"MeshAlgorithm.h"
 #include"outlinerwidget.h"
 #include"resourcemanager.h"
+#include"groupeditorwidget.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -95,6 +96,7 @@ private slots:
     void loadMeshSlot();
     void SelectSection_clicked();
     void SaveSection_clicked();
+    void updateProgressBar(int val);
 signals:
     void startMeshLoading();
 private:
@@ -141,12 +143,12 @@ private:
 
     QSettings* settings;
 
-
     MeshLoader* loader;
     QThread *tLoader, *tListener;
     StatusListener *listener;
     QWidget* statusWgt;
     QLabel* statusLbl;
     QProgressBar* progressBar;
+    GroupEditorWidget* grWgt;
 };
 #endif // MAINWINDOW_H

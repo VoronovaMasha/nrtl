@@ -74,6 +74,9 @@ MainWindow::MainWindow(QWidget *parent)
     progressBar = new QProgressBar();
     QVBoxLayout* lout = new QVBoxLayout();
 
+    grWgt = new GroupEditorWidget(this);
+
+
     /** Setup **/
     this->setWindowTitle("Nerve Tracts Lab");
 
@@ -123,6 +126,13 @@ MainWindow::MainWindow(QWidget *parent)
     statusWgt->resize(200, 100);
     progressBar->setMinimum(0);
     progressBar->setMaximum(100);
+
+    grWgt->setWindowFlags(Qt::Window |
+                          Qt::CustomizeWindowHint |
+                          Qt::WindowTitleHint |
+                          Qt::WindowCloseButtonHint |
+                          Qt::WindowStaysOnTopHint |
+                          Qt::Tool);
 
     /** Connect **/
 
@@ -193,6 +203,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->setCentralWidget(glWgt);
     this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock_Outliner);
     this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock_TractEditor);
+
 }
 
 MainWindow::~MainWindow()
@@ -232,19 +243,24 @@ void MainWindow::on_OpenAction_clicked()
         loader->moveToThread(tLoader);
         listener->moveToThread(tListener);
 
-        connect(tLoader, &QThread::finished, loader, &QObject::deleteLater);
-        connect(tListener, &QThread::finished, listener, &QObject::deleteLater);
+        connect(tLoader, &QThread::finished,
+                loader, &QObject::deleteLater);
+        connect(tListener, &QThread::finished,
+                listener, &QObject::deleteLater);
 
-        connect(this, &MainWindow::startMeshLoading, loader, &MeshLoader::loadMesh);
-        connect(loader, &MeshLoader::loadingFinished, this, &MainWindow::loadMeshSlot);
+        connect(this, &MainWindow::startMeshLoading,
+                loader, &MeshLoader::loadMesh);
+        connect(loader, &MeshLoader::loadingFinished,
+                this, &MainWindow::loadMeshSlot);
 
         connect(listener, &StatusListener::sendStatus,
-                [this](int st) { progressBar->setValue(st); qDebug() << "listener"; });
+                this, &MainWindow::updateProgressBar);
 
+        statusWgt->show();
         tLoader->start();
         tListener->start();
         emit startMeshLoading();
-        statusWgt->show();
+
 
 #else
         MeshModelLoader::OBJ::loadMesh();
@@ -267,6 +283,11 @@ void MainWindow::on_OpenAction_clicked()
         }
 #endif
     }
+}
+
+void MainWindow::updateProgressBar(int val)
+{
+    progressBar->setValue(val);
 }
 
 void MainWindow::loadMeshSlot()
@@ -339,7 +360,7 @@ void MainWindow::SelectSection_clicked()
         QMessageBox::warning(this, "Warning", "Before cutting choose current step.");
         return;
     }
-    id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
+    id=RStep::MeshCut::get(id);
     if(id==NONE)
     {
         QMessageBox::warning(this, "Warning", "Before cutting load cut to current step.");
@@ -350,6 +371,9 @@ void MainWindow::SelectSection_clicked()
         QMessageBox::warning(this, "Warning", "Before cutting switch off transparency.");
         return;
     }
+
+    /** Show group Widget here **/
+    grWgt->show();
     glWgt->cutVertexes.clear();
     glWgt->tr_cutVertexes.clear();
     glWgt->cutFlag=1;
@@ -358,6 +382,7 @@ void MainWindow::SelectSection_clicked()
 void MainWindow::SaveSection_clicked()
 {
     glWgt->cutFlag=0;
+    grWgt->close();
     if(ROutlinerData::WorkingStep::get()!=NONE && RStep::MeshCut::get(ROutlinerData::WorkingStep::get())!=NONE)
     {
         MeshCutter::ViewMatrix::set(glWgt->getViewMatrix());
