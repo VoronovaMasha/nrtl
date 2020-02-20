@@ -72,13 +72,23 @@ bool RSectionModel::GroupId::set(DataId section_id, IGroupId group_id)
 
     /* 1. Разорвать старые связи */
     _prev_group = stp->section_group_map.at(section_id);
-    _prev_section = stp->group_section_map.at(group_id);
-    stp->section_group_map[_prev_section] = NONE;
-    stp->group_section_map[_prev_group] = NONE;
-
+    if(group_id._id != NONE)
+    {
+        _prev_section = stp->group_section_map.at(group_id);
+        stp->section_group_map[_prev_section] = NONE;
+    }
+    if(_prev_group._id != NONE)
+    {
+        stp->group_section_map[_prev_group] = NONE;
+    }
     /*2. Построить новые */
     stp->section_group_map[section_id] = group_id;
     stp->group_section_map[group_id] = section_id;
+
+    /** назначить цвет модели **/
+
+    model->meshData.getElement(section_id)->setColor(group_id._color);
+
 
     return true;
 }

@@ -150,12 +150,14 @@ struct RSectionModel : public NrtlManager
 
     class GroupId
     {
+    public:
         static bool set(DataId section, IGroupId id);
         static IGroupId get(DataId mesh);
     };
 
     class Step
     {
+    public:
         static DataId get(DataId section);
     };
 };

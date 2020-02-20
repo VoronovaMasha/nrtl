@@ -63,7 +63,7 @@ public:
     void addMainModel(MeshModel* mesh,QString name);
     void addCut(MeshModel* mesh,QString name);
     void setObjLoaderAction(QAction* obj_loader) { act_loadObj = obj_loader; }
-    void addNewSection(MeshModel* mesh);
+    void addNewSection(MeshModel* mesh, IGroupId gid);
 private slots:
     void update();
     void add_step();

@@ -226,16 +226,17 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
     }
 }
 
-void OutlinerWidget::addNewSection(MeshModel* mesh)
+void OutlinerWidget::addNewSection(MeshModel* mesh, IGroupId gid)
 {
     if(ROutlinerData::WorkingStep::get()==NONE)
     {
         QMessageBox::warning(this, "Warning", "You have not chosen current step.");
         return;
     }
-    DataId id=RMeshModel::create(mesh);
-    RMeshModel::Name::set(id,QString("Section"));
+    DataId id=RSectionModel::create(mesh);
+    RSectionModel::Name::set(id,QString("Section"));
     RStep::SectionList::add(ROutlinerData::WorkingStep::get(),id);
+    RSectionModel::GroupId::set(id, gid);
     RMeshModel::Visibility::makeVisibleOnlyOne(id);
     ROutlinerData::WorkingStep::set(NONE);
     update();

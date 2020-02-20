@@ -50,6 +50,7 @@ bool RStep::SectionList::add(DataId step_id, DataId section_id)
 {
     getStep(step_id)->meshSectionIds.push_back(section_id);
     getStep(step_id)->section_group_map[section_id] = NONE;
+    model->meshData.getElement(section_id)->setStep(step_id);
     return true;
 }
 bool RStep::SectionList::remove(DataId step_id, DataId section_id)
@@ -65,7 +66,7 @@ bool RStep::SectionList::remove(DataId step_id, DataId section_id)
     auto _group = getStep(step_id)->section_group_map[section_id];
     getStep(step_id)->section_group_map.erase(section_id);
     getStep(step_id)->group_section_map[_group] = NONE;
-
+    model->meshData.getElement(section_id)->setStep(NONE);
     return true;
 }
 RSectionList& RStep::SectionList::get(DataId step_id)

@@ -381,26 +381,29 @@ void MainWindow::SelectSection_clicked()
 
 void MainWindow::SaveSection_clicked()
 {
-    glWgt->cutFlag=0;
     grWgt->close();
-    if(ROutlinerData::WorkingStep::get()!=NONE && RStep::MeshCut::get(ROutlinerData::WorkingStep::get())!=NONE)
+    if(glWgt->cutFlag!=0)
     {
-        MeshCutter::ViewMatrix::set(glWgt->getViewMatrix());
-        MeshCutter::CutVertexes::set(glWgt->cutVertexes,glWgt->tr_cutVertexes);
-        MeshModel* section=MeshCutter::cutFromMesh(RStep::MeshCut::get(ROutlinerData::WorkingStep::get()));
-        if(section!=nullptr)
+        glWgt->cutFlag=0;
+        if(ROutlinerData::WorkingStep::get()!=NONE && RStep::MeshCut::get(ROutlinerData::WorkingStep::get())!=NONE)
         {
-            NrtlManager::createTransaction(NrtlManager::SYNC);
-            outlinerWgt->addNewSection(section);
-            NrtlManager::commitTransaction();
-            glWgt->update();
+            MeshCutter::ViewMatrix::set(glWgt->getViewMatrix());
+            MeshCutter::CutVertexes::set(glWgt->cutVertexes,glWgt->tr_cutVertexes);
+            MeshModel* section=MeshCutter::cutFromMesh(RStep::MeshCut::get(ROutlinerData::WorkingStep::get()));
+            if(section!=nullptr)
+            {
+                NrtlManager::createTransaction(NrtlManager::SYNC);
+                outlinerWgt->addNewSection(section, grWgt->getCurrentId());
+                NrtlManager::commitTransaction();
+                glWgt->update();
+            }
+            else
+            {
+                QMessageBox::warning(this, "Warning", MeshCutter::errorString());
+            }
+            glWgt->cutVertexes.clear();
+            glWgt->tr_cutVertexes.clear();
         }
-        else
-        {
-            QMessageBox::warning(this, "Warning", MeshCutter::errorString());
-        }
-        glWgt->cutVertexes.clear();
-        glWgt->tr_cutVertexes.clear();
     }
 }
 

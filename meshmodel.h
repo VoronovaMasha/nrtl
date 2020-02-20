@@ -47,6 +47,7 @@ public:
     /*! \todo: Использовать наследование SectionModel::MeshModel */
     DataId step() { return _step_id; }
     void setStep(DataId id) { _step_id = id; }
+    void setColor(QColor clr) { r = clr.red()/256.0; g = clr.green()/256.0; b = clr.blue()/256.0; }
 private:
     QOpenGLBuffer vertexBuffer, indexBuffer;
     QMatrix4x4 modelMatrix;

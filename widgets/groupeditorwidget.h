@@ -28,12 +28,26 @@ Q_OBJECT
 public:
     GroupEditorWidget(QWidget* parent);
     void rewrite();
+    IGroupId getCurrentId()
+    {
+        IGroupId _none;
+        if(mainList->currentItem() == nullptr)
+        {
+            qDebug() << "id=" << _none._id;
+            return _none;
+        }
+        else
+        {
+            qDebug() << "id!=0";
+            return dynamic_cast<GroupItem*>(mainList->currentItem())->_group;
+        }
+    }
 private:
     QWidget *wid;
     QListWidget *mainList;
     QVBoxLayout *boxV;
     QPushButton *addGroupBtn;
-    QMap< QListWidgetItem*, QPair<QString,QIcon>> mapLink;
+//    QMap< QListWidgetItem*, QPair<QString,QIcon>> mapLink;
 //    QMap<QString,QIcon> textIcon;
     QLineEdit *line;
 
