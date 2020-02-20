@@ -20,7 +20,12 @@ OutlinerWidget::OutlinerWidget()
     currentIt = nullptr;
     lout = new QVBoxLayout(this);
     tree = new QTreeWidget();
-    tree->header()->hide();
+//    tree->header()->hide();
+    tree->setColumnCount(4);
+    tree->setHeaderLabels({"", "Mesh", "Group", "Color"});
+    tree->header()->setStretchLastSection(false);
+    tree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     tree->clear();
     addStepBtn = new QPushButton("Add step");
     lout->addWidget(tree);
@@ -28,9 +33,10 @@ OutlinerWidget::OutlinerWidget()
     connect(addStepBtn,SIGNAL(clicked()),this,SLOT(add_step()));
     tree->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(tree, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotCustomMenuRequested(QPoint)));
+    connect(tree, &QTreeWidget::itemDoubleClicked, this, &OutlinerWidget::make_step_current);
     QString name_step = "No main mesh";
     mainMesh=new QTreeWidgetItem();
-    mainMesh->setText(0,name_step);
+    mainMesh->setText(1,name_step);
     tree->addTopLevelItem(mainMesh);
 }
 
@@ -47,7 +53,6 @@ void OutlinerWidget::addMainModel(MeshModel *mesh,QString name)
     update();
     emit need_update();
 }
-
 void OutlinerWidget::addCut(MeshModel *mesh,QString name)
 {
     DataId old_id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
@@ -60,7 +65,6 @@ void OutlinerWidget::addCut(MeshModel *mesh,QString name)
     update();
     emit need_update();
 }
-
 void OutlinerWidget::update()
 {
     tree->clear();
@@ -76,36 +80,56 @@ void OutlinerWidget::update()
     else
         name="No main mesh";
     mainMesh=new QTreeWidgetItem();
-    mainMesh->setText(0,name);
+    mainMesh->setText(1,name);
     tree->addTopLevelItem(mainMesh);
     RStepList stepList=ROutlinerData::StepList::get();
     for(unsigned int i=0;i<stepList.size();i++)
     {
         QString name_step=RStep::Name::get(stepList[i]);
-        if(stepList[i]==current_step)
-            name_step+=QString(" (current)");
         Step *st = new Step();
+        tree->addTopLevelItem(st);
+        if(stepList[i]==current_step)
+        {
+            tree->expandItem(st);
+            st->setExpanded(true);
+            name_step+=QString(" (current)");
+        }
         st->id=stepList[i];
-        st->setText(0,name_step);
+        st->setText(1,name_step);
+
         DataId cut_id=RStep::MeshCut::get(stepList[i]);
         QString name_cut;
         if(cut_id!=NONE)
         {
             name_cut=RMeshModel::Name::get(cut_id);
-            st->cut->setText(0,name_cut);
+            st->cut->setText(1,name_cut);
         }
         RSectionList sectionList=RStep::SectionList::get(stepList[i]);
         if(sectionList.size())
         {
-            QString section_name=RMeshModel::Name::get(sectionList[0]);
-            st->sections->child(0)->setText(0,section_name);
+            QString section_name=QString("    ") + RMeshModel::Name::get(sectionList[0]);
+            st->sections->child(0)->setText(1,section_name);
+            IGroupId gid = RSectionModel::GroupId::get(sectionList[0]);
+            QString group_name = gid == NONE ? "no group" : gid._name;
+            st->sections->child(0)->setText(2, group_name);
             st->v_section_in_sect[0]->id=sectionList[0];
+            if(gid._id != NONE)
+            {
+                st->sections->child(0)->setIcon(3, makeIcon(gid._color));
+            }
             for(unsigned int j=1;j<sectionList.size();j++)
             {
-                section_name=RMeshModel::Name::get(sectionList[j]);
+                section_name= QString("    ") + RMeshModel::Name::get(sectionList[j]);
                 Section *child_for_section = new Section();
-                child_for_section->setText(0,section_name);
+                child_for_section->setText(1,section_name);
+                gid = RSectionModel::GroupId::get(sectionList[j]);
+                group_name = gid == NONE ? "no group" : gid._name;
+                child_for_section->setText(2, group_name);
                 child_for_section->id=sectionList[j];
+                if(gid._id != NONE)
+                {
+                    child_for_section->setIcon(3, makeIcon(gid._color));
+                }
                 st->sections->addChild(child_for_section);
                 st->v_section_in_sect.push_back(child_for_section);
                 st->how_many_section++;
@@ -113,7 +137,6 @@ void OutlinerWidget::update()
         }
         how_many_step++;
         v_steps.push_back(st);
-        tree->addTopLevelItem(st);
     }
 }
 
@@ -183,7 +206,7 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
         }
         else if(item == q->cut)
         {
-            if(item->text(0)!="No cut")
+            if(item->text(1)!="No cut")
             {
                 QAction * renameCutDevice = new QAction("Rename", this);
                 QAction * deleteCutDevice = new QAction("Delete", this);
@@ -203,7 +226,7 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
             {
                 if(item == q->v_section_in_sect[j])
                 {
-                    if(item->text(0)!="No sections")
+                    if(item->text(1)!="    No sections")
                     {
                         QAction * renameSectionDevice = new QAction("Rename", this);
                         QAction * makeVisible = new QAction("Make Visible", this);
@@ -324,30 +347,29 @@ void OutlinerWidget::change(QString s)
 
 void OutlinerWidget::make_step_current()
 {
-    DataId main_mesh_id = ROutlinerData::MainMesh::get();
-    if(main_mesh_id != NONE)
+    Step* stp = dynamic_cast<Step*>(tree->currentItem());
+    if(stp != nullptr)
     {
-        if(RMeshModel::Visibility::get(main_mesh_id))
-            RMeshModel::Visibility::makeVisibleOnlyOne(main_mesh_id);
-        else RMeshModel::Visibility::makeAllUnvisible();
-    }
-
-    for(auto i = 0; i < v_steps.size(); i++)
-    {
-        Step *q = v_steps[i];
-        if (currentIt == q)
+        DataId step_id = stp->id;
+        DataId main_mesh_id = ROutlinerData::MainMesh::get();
+        if(main_mesh_id != NONE)
         {
-            ROutlinerData::WorkingStep::set(q->id);
-            break;
+            if(RMeshModel::Visibility::get(main_mesh_id))
+                RMeshModel::Visibility::makeVisibleOnlyOne(main_mesh_id);
+            else RMeshModel::Visibility::makeAllUnvisible();
         }
-    }
-    DataId id = RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
-    if(id!=NONE)
-        RMeshModel::Visibility::set(id, true);
 
-    /*! \todo: make sections visible */
-    update();
-    emit need_update();
+
+        ROutlinerData::WorkingStep::set(step_id);
+
+        DataId id = RStep::MeshCut::get(step_id);
+        if(id!=NONE)
+            RMeshModel::Visibility::set(id, true);
+
+        /*! \todo: make sections visible */
+        update();
+        emit need_update();
+    }
 }
 
 void OutlinerWidget::makeSectionVisible()

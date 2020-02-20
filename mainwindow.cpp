@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent)
                           Qt::WindowCloseButtonHint |
                           Qt::WindowStaysOnTopHint |
                           Qt::Tool);
+    grWgt->setGeometry(150, 200, 230, 400);
 
     /** Connect **/
 

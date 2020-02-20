@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include <QVector>
+#include <QPainter>
 #include<QHeaderView>
 #include"nrtlmanager.h"
 
@@ -33,9 +34,9 @@ public:
         cut = new QTreeWidgetItem();
         sections = new QTreeWidgetItem();
         sect_1 = new Section();
-        cut->setText(0,"No cut");
-        sections->setText(0,"Sections");
-        sect_1->setText(0,"No sections");
+        cut->setText(1,"No cut");
+        sections->setText(1,"Sections");
+        sect_1->setText(1,"    No sections");
         v_section_in_sect.push_back(sect_1);
         sections->addChild(sect_1);
         this->addChild(cut);
@@ -64,6 +65,25 @@ public:
     void addCut(MeshModel* mesh,QString name);
     void setObjLoaderAction(QAction* obj_loader) { act_loadObj = obj_loader; }
     void addNewSection(MeshModel* mesh, IGroupId gid);
+
+    QIcon makeIcon(QColor clr)
+    {
+        QImage image(16, 16, QImage::Format_ARGB32_Premultiplied);
+        QPainter painter(&image);
+        painter.fillRect(0, 0, 16, 16, clr);
+        QRgb rgb = clr.rgb();
+        if(rgb == QColor(Qt::white).rgb()){
+            QPen pen(Qt::black);
+            pen.setWidth(20);
+            painter.setPen(pen);
+            painter.drawRect(0,0,16,16);
+        }
+        QPixmap pixmap;
+        pixmap.convertFromImage(image);
+        QIcon icon(pixmap);
+        return icon;
+    }
+
 private slots:
     void update();
     void add_step();
@@ -77,6 +97,7 @@ private slots:
     void makeMainMeshVisible();
     void changeTransparency();
     void setTransparency(int value,DataId id);
+
 };
 
 #endif // OUTLINERCLASS_H
