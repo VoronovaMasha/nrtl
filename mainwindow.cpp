@@ -115,7 +115,7 @@ MainWindow::MainWindow(QWidget *parent)
     dock_Outliner->setMaximumWidth(350);
     dock_TractEditor->setMaximumWidth(350);
 
-//    outlinerWgt->setObjLoaderAction(act_LoadObj);
+    outlinerWgt->setObjLoaderAction(act_LoadObj);
 
     statusWgt->setWindowFlags(Qt::Window | Qt::FramelessWindowHint | Qt::Dialog );
     statusWgt->setWindowModality(Qt::WindowModal);

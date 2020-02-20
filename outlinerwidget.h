@@ -12,7 +12,7 @@
 class Section : public QTreeWidgetItem
 {
 public:
-    unsigned int id;
+    DataId id;
     Section():QTreeWidgetItem(){}
 };
 
@@ -22,7 +22,7 @@ class Step : public QTreeWidgetItem
 {
 private:
 public:
-     unsigned int id;
+     DataId id;
      int how_many_section = 1;
      QTreeWidgetItem *cut;
      QTreeWidgetItem *sections;
@@ -47,19 +47,22 @@ class OutlinerWidget : public QWidget
 {
 Q_OBJECT
 private:
-    QTreeWidget *tree;
     QVBoxLayout *lout;
-    QPushButton *but_1;
-    QVector<Step*> v_steps;
-    int how_many_step = 1;
+    QTreeWidget *tree;
     QTreeWidgetItem *currentIt;
     QTreeWidgetItem *mainMesh;
+    QPushButton *addStepBtn;
+    QVector<Step*> v_steps;
+    QAction* act_loadObj;
+    int how_many_step = 1;
+
 signals:
     void need_update();
 public:
     OutlinerWidget();
     void addMainModel(MeshModel* mesh,QString name);
     void addCut(MeshModel* mesh,QString name);
+    void setObjLoaderAction(QAction* obj_loader) { act_loadObj = obj_loader; }
     void addNewSection(MeshModel* mesh);
 private slots:
     void update();
