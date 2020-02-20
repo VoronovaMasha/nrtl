@@ -1,13 +1,23 @@
 #include "meshmodel.h"
 #include <QOpenGLTexture>
+#include <GL/gl.h>
+#include <GL/glu.h>
 
 MeshModel::MeshModel():indexBuffer(QOpenGLBuffer::IndexBuffer),mytexture(0)
 {
     _step_id = NONE;
+    _transperancy=100;
+    r=0;
+    g=0;
+    b=0;
 }
 MeshModel::MeshModel(const QVector<VertexData> &vertData, const QVector<GLuint> &indexes, const QImage &texture):indexBuffer(QOpenGLBuffer::IndexBuffer),mytexture(0)
 {
     _step_id = NONE;
+    _transperancy=100;
+    r=0;
+    g=0;
+    b=0;
     image=texture;
     init(vertData,indexes,texture);
 }
@@ -58,13 +68,28 @@ void MeshModel::init(const QVector<VertexData> &vertData, const QVector<GLuint> 
     modelMatrix.setToIdentity();
 }
 
-void MeshModel::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
+void MeshModel::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions,bool is_allign)
 {
+    if(_transperancy!=100 && !is_allign)
+    {
+        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+        glDisable(GL_DEPTH_TEST);
+        glDepthMask(GL_FALSE);
+    }
     if(!vertexBuffer.isCreated()|| !indexBuffer.isCreated())
         return;
     mytexture->bind(0);
     program->setUniformValue("u_texture",0); //0-номер текстуры которая будет отрисовываться
     program->setUniformValue("u_modelMatrix", modelMatrix);
+    program->setUniformValue("u_r", r);
+    program->setUniformValue("u_g", g);
+    program->setUniformValue("u_b", b);
+    if(_transperancy!=100 && !is_allign )
+        program->setUniformValue("u_alpha", _transperancy/100.0f);
+    else
+        program->setUniformValue("u_alpha", 1);
     vertexBuffer.bind();
     int offset=0;
 
@@ -89,6 +114,12 @@ void MeshModel::draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions)
     vertexBuffer.release();
     indexBuffer.release();
     mytexture->release();
+    if(_transperancy!=100 && !is_allign )
+    {
+        glEnable(GL_DEPTH_TEST);
+        glDepthMask(GL_TRUE);
+        glDisable(GL_BLEND);
+    }
 }
 
 void MeshModel::translate(const QVector3D &translateVector)
@@ -121,7 +152,6 @@ void MeshModel::setPolygonMatrix(QVector<QVector<int> > a)
     polygonMatrix=a;
 }
 \
-
 
 
 

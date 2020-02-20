@@ -5,6 +5,54 @@
 #include <string>
 #include <QMutex>
 
+
+class MeshCutter
+{
+public:
+    static MeshModel* cutFromMesh(DataId mesh_id);
+    static QString errorString()
+    {
+        return _error_string;
+    }
+    class CutVertexes
+    {
+    public:
+        static QVector<QVector3D>& get()
+        {
+            return cutVertexes;
+        }
+        static bool set(QVector<QVector3D> new_cutVertexes,QVector<QVector3D> new_tr_cutVertexes)
+        {
+            if(new_tr_cutVertexes.size()>0)
+                cutVertexes=new_cutVertexes+new_tr_cutVertexes;
+            else
+                cutVertexes=new_cutVertexes;
+            if(cutVertexes.size()<3)
+                _error_string=QString("You must choose at least 3 vertexes.");
+            else
+                _error_string=QString("No error");
+            return true;
+        }
+    };
+    class ViewMatrix
+    {
+    public:
+        static QMatrix4x4 get()
+        {
+            return ViewMatrix2;
+        }
+        static bool set(QMatrix4x4 ViewMatrix)
+        {
+            ViewMatrix2=ViewMatrix;
+            return true;
+        }
+    };
+private:
+    static QString _error_string;
+    static QVector<QVector3D> cutVertexes;
+    static QMatrix4x4 ViewMatrix2;
+};
+
 struct SimpleMesh
 {
     SimpleMesh(QVector<VertexData> dat, QVector<GLuint> ind, QImage img) :

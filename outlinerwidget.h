@@ -15,9 +15,6 @@ public:
     DataId id;
     Section():QTreeWidgetItem(){}
 };
-
-
-
 class Step : public QTreeWidgetItem
 {
 private:

@@ -13,7 +13,7 @@ class IVContainerIter;
 template<typename DocType>
 class const_IVContainerIter;
 
-template<typename DocType=void*>
+template<typename DocType>
 class IVContainer
 {
 public:

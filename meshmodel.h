@@ -7,7 +7,6 @@
 # include <QOpenGLFunctions>
 # include <QOpenGLShaderProgram>
 # include "NrtlType.h"
-
 struct VertexData
 {
     VertexData(){}
@@ -29,7 +28,7 @@ public:
     MeshModel(const QVector<VertexData> &vertData, const QVector<GLuint> &indexes, const QImage &texture);
     ~MeshModel();
     void init(const QVector<VertexData> &vertData, const QVector<GLuint> &indexes, const QImage &texture);
-    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions);
+    void draw(QOpenGLShaderProgram *program, QOpenGLFunctions *functions,bool is_allign=false);
     void translate(const QVector3D &translateVector);
     void rotate(QQuaternion rotation);
     QMatrix4x4 getModelMatrix();
@@ -41,23 +40,20 @@ public:
     QVector<QVector3D> border;
     QVector<QVector<int>> polygonMatrix;
     QImage image;
-
     QString name() { return _name; }
     void setName(const QString& mesh_name) { _name = mesh_name; }
     uint8_t transperancy() { return _transperancy; }
     void setTransperancy(uint8_t val) { _transperancy = val; }
-
     /*! \todo: Использовать наследование SectionModel::MeshModel */
-
     DataId step() { return _step_id; }
     void setStep(DataId id) { _step_id = id; }
-
 private:
     QOpenGLBuffer vertexBuffer, indexBuffer;
     QMatrix4x4 modelMatrix;
     QOpenGLTexture *mytexture;
     QString _name;
     uint8_t _transperancy;
+    float r,g,b;
     /*! \todo: Использовать наследование SectionModel::MeshModel */
     DataId _step_id;
 };

@@ -57,8 +57,6 @@ protected:
     static int groupIdCounter;
 };
 
-typedef IVContainer<MeshModel*> RMeshData;
-
 class MeshData : public NrtlManager
 {
 public:
@@ -214,8 +212,6 @@ public:
     };
 };
 
-typedef std::vector<DataId> RStepList;
-typedef std::vector<IGroupId> RGroupList;
 
 class ROutlinerData : public NrtlManager
 {
@@ -252,7 +248,19 @@ public:
     };
 };
 
+struct RTractM : public NrtlManager
+{
+    static DataId create();
+    static bool remove(DataId);
 
+    class SecLst
+    {
+    public:
+        static RMeshData get(DataId);
+        static bool create(IGroupId);
+    };
+
+};
 
 #endif //NRTLMANAGER_H
 

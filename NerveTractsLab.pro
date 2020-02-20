@@ -24,6 +24,7 @@ SOURCES += \
     allignwindow.cpp \
     main.cpp \
     mainwindow.cpp \
+    meshcutter.cpp \
     meshmodel.cpp \
     meshmodelloader.cpp \
     nrtlmanager.cpp \

@@ -39,26 +39,19 @@ public:
     QVector<QVector3D> cutVertexes;
     QVector<QVector3D> tr_cutVertexes;
 public slots:
-//    void loadObj(QString path);
-//    void centerizeObj(int i);
-    void cutter();
-    bool checkBelonging(float _pointX, float _pointY);
-    bool checkDistance(QVector3D a, QVector3D b, QVector3D c);
+    QMatrix4x4 getViewMatrix()
+    {
+        return ViewMatrix2;
+    }
     void finder();
     void connecting(unsigned int a,unsigned int b);
-    void alligning(QVector<QVector3D>,QVector<QVector3D>, int c, int d);
-    void transparent(int what);
-    QVector<MeshModel*> getAllModels();
-    int getObjectsSize();
-    int getSectionsSize();
-    bool canCut();
     void makePolygonMatrix(int a);
     int makeBorder(int a);
     Data makeSidesOfTract(int a, int b, int numer, bool inverted);
 protected:
     void initializeGL();
-    void resizeGL(int w,int h);//вызывается при изменении размера окна
-    void paintGL();//вызывается каждый раз при перерисовке содержимого окна
+    void resizeGL(int w,int h);
+    void paintGL();
     void initShaders();
 
     void mousePressEvent(QMouseEvent *event);
@@ -79,9 +72,9 @@ protected:
     QVector<MeshModel*> sections;
     QVector<MeshModel*> tracks;
 
-    float z;//сдвиг по оси z камеры
-    float x;//сдвиг по x
-    float y;//сдвиг по y
+    float z;
+    float x;
+    float y;
 
     int tr_section;
     int tr_model;
@@ -89,7 +82,6 @@ protected:
 
     QOpenGLFramebufferObject *mFBO=0;
 
-    //вспомогательные для расчёта z-буфера в paintGL
     QVector<QVector2D> mouseclick;
 };
 #endif // WIDGET_H

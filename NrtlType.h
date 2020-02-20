@@ -4,6 +4,10 @@
 #include <QColor>
 #include <vector>
 
+template<typename DocType=void*>
+class IVContainer;
+class MeshModel;
+
 enum {NONE=0};
 
 typedef uint32_t DataId;
@@ -12,7 +16,6 @@ typedef std::vector<DataId> ResourceList;
 namespace NrtlSettings {
     static QString PREV_DIR_VAR = "Previous Dir";
 }
-
 struct IGroupId
 {
     IGroupId(int id = NONE, const QString& name="", QColor color = {0, 0, 0}) :
@@ -58,4 +61,7 @@ struct IGroupId
         return (_id == NONE);
     }
 };
+typedef std::vector<DataId> RStepList;
+typedef std::vector<IGroupId> RGroupList;
+typedef IVContainer<MeshModel*> RMeshData;
 #endif // NRTLTYPE_H

@@ -1,11 +1,18 @@
 #ifndef NRTLMODEL_H
 #define NRTLMODEL_H
 
+#include "NrtlType.h"
 #include "ivcontainer.h"
 #include "outliner.h"
 #include "meshmodel.h"
 
 class NrtlManager;
+
+struct ITract
+{
+    IGroupId groupId;
+    RMeshData secLst, latSurfLst;
+};
 
 class NrtlModel
 {
