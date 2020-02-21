@@ -5,19 +5,19 @@
 #include <string>
 #include <QMutex>
 
-class MeshTopology
+struct MeshTopology
 {
-    PolygonMatrix makePolygonMatrix(MeshModel*)
+    static PolygonMatrix makePolygonMatrix(MeshModel*)
     {
         return {};
     }
 
-    MeshBorder makeBorder(MeshModel*, PolygonMatrix&)
+    static MeshBorder makeBorder(MeshModel*, PolygonMatrix&)
     {
         return {};
     }
 
-    MeshModel* makeSurface(MeshBorder&, MeshBorder&)
+    static MeshModel* makeSurface(MeshBorder&, MeshBorder&)
     {
         return nullptr;
     }

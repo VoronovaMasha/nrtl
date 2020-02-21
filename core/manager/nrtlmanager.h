@@ -282,7 +282,7 @@ struct RTractM : public NrtlManager
     {
     public:
         //! создание боковой поверхности
-        void create();
+        static void create();
         //! виимость боковой поверхности (по номеру тракта) */
         class Vis
         {
@@ -293,6 +293,7 @@ struct RTractM : public NrtlManager
         /*! полупрозрачность боковой поверхности (по номеру тракта) */
         class Trcy
         {
+        public:
             static bool set(DataId tr_id, uint8_t val);
             static uint8_t get(DataId tr_id);
         };
