@@ -48,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     act_DrawPl = new QAction("Draw Polyline");
     act_ConnectBorders = new QAction("Connect Borders");
     act_Outliner = new QAction("Outiner");
-    act_TractEd = new QAction("Tract Editor");
+    act_TractEd = new QAction("Tract Viewer");
     act_NewDoc = new QAction("New");
     act_LoadObj = new QAction("Load");
     act_SaveDoc = new QAction("Save");

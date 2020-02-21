@@ -5,6 +5,25 @@
 #include <string>
 #include <QMutex>
 
+class MeshTopology
+{
+    PolygonMatrix makePolygonMatrix(MeshModel*)
+    {
+        return {};
+    }
+
+    MeshBorder makeBorder(MeshModel*, PolygonMatrix&)
+    {
+        return {};
+    }
+
+    MeshModel* makeSurface(MeshBorder&, MeshBorder&)
+    {
+        return nullptr;
+    }
+
+};
+
 
 class MeshCutter
 {

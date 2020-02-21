@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <QColor>
 #include <vector>
+#include <QVector3D>
 
 template<typename DocType=void*>
 class IVContainer;
@@ -12,6 +13,9 @@ enum {NONE=0};
 
 typedef uint32_t DataId;
 typedef std::vector<DataId> ResourceList;
+typedef QVector<QVector<int>> PolygonMatrix;
+typedef QVector<QVector3D> MeshBorder;
+
 
 namespace NrtlSettings {
     static QString PREV_DIR_VAR = "Previous Dir";

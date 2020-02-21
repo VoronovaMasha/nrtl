@@ -18,62 +18,68 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 WGTPATH = ./widgets
+COREPATH = ./core
+OGLPATH = ./opengl
 
-INCLUDEPATH += $$WGTPATH
+MODELPATH = $$COREPATH/model
+MNGRPATH = $$COREPATH/manager
+ALGPATH = $$COREPATH/meshalgorithm
+
+INCLUDEPATH += $$WGTPATH $$COREPATH $$OGLPATH $$MODELPATH $$MNGRPATH $$ALGPATH
 
 SOURCES += \
-    ROutlinerData.cpp \
-    RTractM.cpp \
-    alignmesh.cpp \
-    allignwidget.cpp \
-    allignwindow.cpp \
+    core/manager/ROutlinerData.cpp \
+    core/manager/RTractM.cpp \
+    core/manager/nrtlmanager.cpp \
+    core/manager/rgroupid.cpp \
+    core/manager/rmeshmodel.cpp \
+    core/manager/rsectionmodel.cpp \
+    core/manager/rstep.cpp \
+    core/meshalgorithm/alignmesh.cpp \
+    core/meshalgorithm/meshcutter.cpp \
+    core/meshalgorithm/meshmodelloader.cpp \
+    core/model/meshmodel.cpp \
+    core/model/nrtlmodel.cpp \
+    core/model/outliner.cpp \
     main.cpp \
-    mainwindow.cpp \
-    meshcutter.cpp \
-    meshmodel.cpp \
-    meshmodelloader.cpp \
-    nrtlmanager.cpp \
-    nrtlmodel.cpp \
-    oglareawidget.cpp \
-    outliner.cpp \
-    outlinerwidget.cpp \
-    renamestepdialog.cpp \
-    resourcemanager.cpp \
-    rgroupid.cpp \
-    rmeshmodel.cpp \
-    rsectionmodel.cpp \
-    rstep.cpp \
-    transparencydialog.cpp \
+    opengl/allignwidget.cpp \
+    opengl/oglareawidget.cpp \
     $$WGTPATH/groupeditorwidget.cpp \
     $$WGTPATH/setcolor.cpp \
-    widgets/tractwidget_simple.cpp
+    $$WGTPATH/tractwidget_simple.cpp \
+    widgets/allignwindow.cpp \
+    widgets/mainwindow.cpp \
+    widgets/outlinerwidget.cpp \
+    widgets/renamestepdialog.cpp \
+    widgets/resourcemanager.cpp \
+    widgets/transparencydialog.cpp
 
 HEADERS += \
-    MeshAlgorithm.h \
-    NrtlType.h \
-    allignwidget.h \
-    allignwindow.h \
-    ivcontainer.h \
-    mainwindow.h  \
-    meshmodel.h \
-    nrtlmanager.h \
-    nrtlmodel.h \
-    oglareawidget.h \
-    outliner.h \
-    outlinerwidget.h \
-    renamestepdialog.h \
-    resourcemanager.h \
-    transparencydialog.h \
-    widgets/groupeditorwidget.h \
-    widgets/setcolor.h \
-    widgets/tractwidget_simple.h
+    core/NrtlType.h \
+    core/manager/nrtlmanager.h \
+    core/meshalgorithm/MeshAlgorithm.h \
+    core/model/ivcontainer.h \
+    core/model/meshmodel.h \
+    core/model/nrtlmodel.h \
+    core/model/outliner.h \
+    opengl/allignwidget.h \
+    opengl/oglareawidget.h \
+    $$WGTPATH/groupeditorwidget.h \
+    $$WGTPATH/setcolor.h \
+    $$WGTPATH/tractwidget_simple.h \
+    widgets/allignwindow.h \
+    widgets/mainwindow.h \
+    widgets/outlinerwidget.h \
+    widgets/renamestepdialog.h \
+    widgets/resourcemanager.h \
+    widgets/transparencydialog.h
 
 FORMS += \
-    allignwindow.ui \
-    dialog.ui \
-    mainwindow.ui \
-    transparencydialog.ui \
-    widgets/setcolor.ui
+    $$WGTPATH/setcolor.ui \
+    ui/allignwindow.ui \
+    ui/dialog.ui \
+    ui/mainwindow.ui \
+    ui/transparencydialog.ui
 
 RESOURCES += resources.qrc
 
