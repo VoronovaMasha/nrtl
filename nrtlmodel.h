@@ -10,8 +10,10 @@ class NrtlManager;
 
 struct ITract
 {
+    QString _name;
     IGroupId groupId;
-    RMeshData secLst, latSurfLst;
+    DataId _tr_id;
+    ResourceList secLst, latSurfLst;
 };
 
 class NrtlModel
@@ -27,6 +29,10 @@ public:
 	void resetMainMesh();  //set to NONE
     DataId mainMeshId;
     OutlinerData outliner;
+
+    std::vector<ITract*> tractLst;
+    DataId tractIdCounter;
+
     IVContainer<MeshModel*> meshData;	
 };
 

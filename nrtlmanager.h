@@ -48,11 +48,11 @@ public:
 
 protected:
 	static NrtlModel* model;
+
+    /*! \todo: переместить в модель */
     static std::vector<IStep*> stepLst;
     static DataId stepIdCounter;
-
     static IStep* getStep(DataId id);
-
     static std::vector<IGroupId> groupLst;
     static int groupIdCounter;
 };
@@ -252,14 +252,30 @@ public:
 
 struct RTractM : public NrtlManager
 {
-    static DataId create();
+    static DataId create(IGroupId gid);
     static bool remove(DataId);
+    static std::vector<DataId> get()
+    {
+        std::vector<DataId> id_vec;
+        for(auto p_tr : model->tractLst)
+        {
+            id_vec.push_back(p_tr->_tr_id);
+        }
+        return id_vec;
+    }
 
-    class SecLst
+    class Name
     {
     public:
-        static RMeshData get(DataId);
-        static bool create(IGroupId);
+        static bool set(DataId tr_id, const QString& name);
+        static QString get(DataId tr_id);
+    };
+
+    class Visibility
+    {
+    public:
+        static bool set(DataId tr_id, bool vis);
+        static bool get(DataId tr_id);
     };
 
 };

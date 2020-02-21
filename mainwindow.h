@@ -20,6 +20,7 @@
 #include"outlinerwidget.h"
 #include"resourcemanager.h"
 #include"groupeditorwidget.h"
+#include"tractwidget_simple.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -135,7 +136,7 @@ private:
     QAction* act_ResMan;
 
     OutlinerWidget* outlinerWgt;
-    QWidget* dummy_2;
+    TractWidget_simple* tractWgt;
 
     NrtlModel* model;
 
@@ -150,5 +151,6 @@ private:
     QLabel* statusLbl;
     QProgressBar* progressBar;
     GroupEditorWidget* grWgt;
+
 };
 #endif // MAINWINDOW_H

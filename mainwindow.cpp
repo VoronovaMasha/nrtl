@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     act_ResMan = new QAction("Resource Manager");
 
     outlinerWgt = new OutlinerWidget();
-    dummy_2 = new QWidget();
+    tractWgt = new TractWidget_simple();
 
     res_man_wnd = new ResourceManager(this);
     res_man_wnd->close();
@@ -104,7 +104,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonIconOnly);
 
     dock_Outliner->setWidget(outlinerWgt);
-    dock_TractEditor->setWidget(dummy_2);
+    dock_TractEditor->setWidget(tractWgt);
 
     dock_Outliner->setWindowFlags( dock_Outliner->windowFlags() | Qt::WindowStaysOnTopHint | Qt::SubWindow );
     dock_TractEditor->setWindowFlags( dock_TractEditor->windowFlags() | Qt::WindowStaysOnTopHint | Qt::SubWindow );

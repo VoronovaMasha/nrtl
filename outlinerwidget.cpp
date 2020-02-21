@@ -358,6 +358,7 @@ void OutlinerWidget::make_step_current()
                 RMeshModel::Visibility::makeVisibleOnlyOne(main_mesh_id);
             else RMeshModel::Visibility::makeAllUnvisible();
         }
+        else RMeshModel::Visibility::makeAllUnvisible();
 
 
         ROutlinerData::WorkingStep::set(step_id);

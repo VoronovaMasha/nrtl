@@ -23,6 +23,7 @@ INCLUDEPATH += $$WGTPATH
 
 SOURCES += \
     ROutlinerData.cpp \
+    RTractM.cpp \
     alignmesh.cpp \
     allignwidget.cpp \
     allignwindow.cpp \
@@ -44,7 +45,8 @@ SOURCES += \
     rstep.cpp \
     transparencydialog.cpp \
     $$WGTPATH/groupeditorwidget.cpp \
-    $$WGTPATH/setcolor.cpp
+    $$WGTPATH/setcolor.cpp \
+    widgets/tractwidget_simple.cpp
 
 HEADERS += \
     MeshAlgorithm.h \
@@ -63,7 +65,8 @@ HEADERS += \
     resourcemanager.h \
     transparencydialog.h \
     widgets/groupeditorwidget.h \
-    widgets/setcolor.h
+    widgets/setcolor.h \
+    widgets/tractwidget_simple.h
 
 FORMS += \
     allignwindow.ui \

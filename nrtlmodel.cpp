@@ -1,8 +1,8 @@
 #include "nrtlmodel.h"
-
 NrtlModel::NrtlModel()
 {
     mainMeshId=NONE;
+    tractIdCounter = 1;
 }
 
 void NrtlModel::setMainMeshId(DataId id)
