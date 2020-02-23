@@ -38,6 +38,7 @@ SOURCES += \
     core/meshalgorithm/alignmesh.cpp \
     core/meshalgorithm/meshcutter.cpp \
     core/meshalgorithm/meshmodelloader.cpp \
+    core/meshalgorithm/meshtopology.cpp \
     core/model/meshmodel.cpp \
     core/model/nrtlmodel.cpp \
     core/model/outliner.cpp \
