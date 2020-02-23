@@ -257,51 +257,10 @@ void OutlinerWidget::addNewSection(MeshModel* mesh, IGroupId gid)
         return;
     }
     DataId id=RSectionModel::create(mesh);
-    RSectionList secLst=RStep::SectionList::get(ROutlinerData::WorkingStep::get());
-    bool flag=false;
-    DataId prev_id=NONE;
-    for(unsigned int i=0;i<secLst.size();i++)
-    {
-        if(RSectionModel::GroupId::get(secLst[i])==gid)
-        {
-            flag=true;
-            prev_id=secLst[i];
-        }
-    }
-    if(flag && prev_id!=NONE )
-    {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Question", "Do you want to converge sections? (Yes - to converge, No - to replace previous section)",
-                                        QMessageBox::Yes|QMessageBox::No);
-          if (reply == QMessageBox::Yes)
-          {
-              MeshModel* obj=RSectionModel::Converge::convergesections(prev_id,id);
-              DataId new_id=RSectionModel::create(obj);
-              RSectionModel::Name::set(new_id,RSectionModel::Name::get(prev_id));
-              RStep::SectionList::remove(ROutlinerData::WorkingStep::get(),prev_id);
-              RMeshModel::deleteMesh(prev_id);
-              RMeshModel::deleteMesh(id);
-              RStep::SectionList::add(ROutlinerData::WorkingStep::get(),new_id);
-              RSectionModel::GroupId::set(new_id, gid);
-              RMeshModel::Visibility::makeVisibleOnlyOne(new_id);
-          }
-          else
-          {
-              RStep::SectionList::remove(ROutlinerData::WorkingStep::get(),prev_id);
-              RMeshModel::deleteMesh(prev_id);
-              RStep::SectionList::add(ROutlinerData::WorkingStep::get(),id);
-              RSectionModel::Name::set(id,QString("Section"));
-              RSectionModel::GroupId::set(id, gid);
-              RMeshModel::Visibility::makeVisibleOnlyOne(id);
-          }
-    }
-    else
-    {
-        RSectionModel::Name::set(id,QString("Section"));
-        RStep::SectionList::add(ROutlinerData::WorkingStep::get(),id);
-        RSectionModel::GroupId::set(id, gid);
-        RMeshModel::Visibility::makeVisibleOnlyOne(id);
-    }
+    RSectionModel::Name::set(id,QString("Section"));
+    RStep::SectionList::add(ROutlinerData::WorkingStep::get(),id);
+    RSectionModel::GroupId::set(id, gid);
+    RMeshModel::Visibility::makeVisibleOnlyOne(id);
     ROutlinerData::WorkingStep::set(NONE);
     update();
     emit need_update();

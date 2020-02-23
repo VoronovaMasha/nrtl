@@ -134,17 +134,6 @@ struct RSectionModel : public NrtlManager
         static uint8_t get(DataId mesh_id);
     };
 
-    class Converge
-    {
-        static QString _error_string;
-    public:
-        static MeshModel* convergesections(DataId mesh_1,DataId mesh_2);
-        static QString errorString()
-        {
-            return _error_string;
-        }
-    };
-
     class Visibility
     {
     public:
