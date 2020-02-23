@@ -98,6 +98,8 @@ private slots:
     void loadMeshSlot();
     void SelectSection_clicked();
     void SaveSection_clicked();
+    void SaveDocAs_clicked();
+    void LoadDoc_clicked();
     void updateProgressBar(int val);
 signals:
     void startMeshLoading();
@@ -129,7 +131,7 @@ private:
     QAction* act_TractEd;
     QAction* act_NewDoc;
     QAction* act_LoadObj;
-    QAction* act_SaveDoc;
+    QAction* act_LoadDoc;
     QAction* act_SaveDocAs;
     QAction* act_ResetDoc;
     QAction* act_Undo;

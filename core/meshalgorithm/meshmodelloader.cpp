@@ -27,6 +27,7 @@ void MeshModelLoader::OBJ::loadMesh()
         QVector<VertexData> vertexes;
         QVector<GLuint> indexes;
         QVector<QVector<unsigned int>> polygons;
+        QVector<QVector<unsigned int>> texpolygons;
         if(!objFile.exists())
         {
             _error_string = "Did not found \".obj\" file.";
@@ -132,6 +133,7 @@ void MeshModelLoader::OBJ::loadMesh()
                 ttmp.push_back(vert1[1].toUInt());
                 ttmp.push_back(vert2[1].toUInt());
                 ttmp.push_back(vert3[1].toUInt());
+                texpolygons.push_back(ttmp);
                 if(texcoords.size()==0 || vert1.size()==1 || vert2.size()==1 || vert3.size()==1)
                 {
                     is_picture=false;
@@ -197,7 +199,9 @@ void MeshModelLoader::OBJ::loadMesh()
         else
             mesh=new SimpleMesh(vertexes,indexes,QImage(":/cube.png"));
         mesh->polygons=polygons;
+        mesh->texpolygons=texpolygons;
         mesh->coords=coords;
+        mesh->texcoords=texcoords;
         mtx.lock();
         _status = WAIT;
         _progress = 99;

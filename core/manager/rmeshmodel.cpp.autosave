@@ -90,3 +90,9 @@ DataId RMeshModel::Step::get(DataId mesh_id)
 {
     return model->meshData.getElement(mesh_id)->step();
 }
+
+bool RMeshModel::Step::set(DataId mesh,DataId step_id)
+{
+    model->meshData.getElement(mesh)->setStep(step_id);
+    return true;
+}

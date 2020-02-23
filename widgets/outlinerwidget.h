@@ -65,7 +65,7 @@ public:
     void addCut(MeshModel* mesh,QString name);
     void setObjLoaderAction(QAction* obj_loader) { act_loadObj = obj_loader; }
     void addNewSection(MeshModel* mesh, IGroupId gid);
-
+    void update();
     QIcon makeIcon(QColor clr)
     {
         QImage image(16, 16, QImage::Format_ARGB32_Premultiplied);
@@ -85,7 +85,6 @@ public:
     }
 
 private slots:
-    void update();
     void add_step();
     void slotCustomMenuRequested(QPoint);
     void showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos);

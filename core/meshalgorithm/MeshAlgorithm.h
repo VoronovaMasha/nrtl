@@ -75,7 +75,9 @@ struct SimpleMesh
     QVector<GLuint> indexes;
     QImage texture;
     QVector<QVector<unsigned int>> polygons;
+    QVector<QVector<unsigned int>> texpolygons;
     QVector<QVector3D> coords;
+    QVector<QVector2D> texcoords;
 
 };
 
@@ -122,6 +124,8 @@ public:
             meshModel = new MeshModel(mesh->vertData, mesh->indexes, mesh->texture);
             meshModel->polygons = mesh->polygons;
             meshModel->coords = mesh->coords;
+            meshModel->texcoords=mesh->texcoords;
+            meshModel->texpolygons=mesh->texpolygons;
 
             double x=0.f,y=0.f,z=0.f;
             for(int i=0;i<mesh->coords.size();i++)

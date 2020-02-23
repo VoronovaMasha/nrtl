@@ -422,9 +422,11 @@ void MainWindow::SaveDocAs_clicked()
     }
     QDataStream stream(&file);
     std::vector<DataId> modelIds=MeshData::getMeshIdList();
+    stream<<modelIds.size();
     for(unsigned int i=0;i<modelIds.size();i++)
     {
         stream<<modelIds[i];
+        stream<<RMeshModel::Visibility::get(modelIds[i]);
         stream<<RMeshModel::Name::get(modelIds[i]);
         stream<<MeshData::get().getElement(modelIds[i])->r;
         stream<<MeshData::get().getElement(modelIds[i])->g;
@@ -436,10 +438,7 @@ void MainWindow::SaveDocAs_clicked()
         stream<<MeshData::get().getElement(modelIds[i])->texpolygons;
         stream<<MeshData::get().getElement(modelIds[i])->coords;
         stream<<MeshData::get().getElement(modelIds[i])->texcoords;
-        stream<<MeshData::get().getElement(modelIds[i])->border;
-        stream<<MeshData::get().getElement(modelIds[i])->polygonMatrix;
         stream<<MeshData::get().getElement(modelIds[i])->image;
-        break;
     }
     file.close();
 }
@@ -457,92 +456,126 @@ void MainWindow::LoadDoc_clicked()
         return;
     }
     QDataStream stream(&file);
-    DataId id;
-    QString name;
-    float r,g,b;
-    uint8_t transparency;
-    DataId step_id;
-    QMatrix4x4 modelMatrix;
-    QVector<QVector<unsigned int>> polygons;
-    QVector<QVector<unsigned int>> texpolygons;
-    QVector<QVector3D> coords;
-    QVector<QVector2D> texcoords;
-    QVector<QVector3D> border;
-    QVector<QVector<int>> polygonMatrix;
-    QImage image;
-    stream>>id;
-    stream>>name;
-    stream>>r;
-    stream>>g;
-    stream>>b;
-    stream>>transparency;
-    stream>>step_id;
-    stream>>modelMatrix;
-    stream>>polygons;
-    stream>>texpolygons;
-    stream>>coords;
-    stream>>texcoords;
-    stream>>border;
-    stream>>polygonMatrix;
-    stream>>image;
-    QVector<VertexData> vertexes;
-    QVector<GLuint> indexes;
-    for(int j=0;j<polygons.size();j++)
+    unsigned int size;
+    stream>>size;
+    for(unsigned int i=0;i<size;i++)
     {
-        vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
-        vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
-        vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
-        QVector3D a=vertexes[vertexes.size()-3].position;
-        QVector3D b=vertexes[vertexes.size()-2].position;
-        QVector3D c=vertexes[vertexes.size()-1].position;
-        QVector3D n1=QVector3D(c.x()-a.x(),c.y()-a.y(),c.z()-a.z());
-        QVector3D n2=QVector3D(b.x()-a.x(),b.y()-a.y(),b.z()-a.z());
-        QVector3D n=QVector3D(n1.y()*n2.z()-n1.z()*n2.y(),n1.z()*n2.x()-n1.x()*n2.z(),n1.x()*n2.y()-n1.y()*n2.x());
-        QVector3D norm=QVector3D(-n.x()/n.length(),-n.y()/n.length(),-n.z()/n.length());
-        vertexes[vertexes.size()-3].normal=norm;
-        vertexes[vertexes.size()-2].normal=norm;
-        vertexes[vertexes.size()-1].normal=norm;
-        indexes.append(indexes.size());
-        indexes.append(indexes.size());
-        indexes.append(indexes.size());
-        vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
-        vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
-        vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
-        a=vertexes[vertexes.size()-3].position;
-        b=vertexes[vertexes.size()-2].position;
-        c=vertexes[vertexes.size()-1].position;
-        n1=QVector3D(c.x()-a.x(),c.y()-a.y(),c.z()-a.z());
-        n2=QVector3D(b.x()-a.x(),b.y()-a.y(),b.z()-a.z());
-        n=QVector3D(n1.y()*n2.z()-n1.z()*n2.y(),n1.z()*n2.x()-n1.x()*n2.z(),n1.x()*n2.y()-n1.y()*n2.x());
-        norm=QVector3D(-n.x()/n.length(),-n.y()/n.length(),-n.z()/n.length());
-        vertexes[vertexes.size()-3].normal=norm;
-        vertexes[vertexes.size()-2].normal=norm;
-        vertexes[vertexes.size()-1].normal=norm;
-        indexes.append(indexes.size());
-        indexes.append(indexes.size());
-        indexes.append(indexes.size());
+        DataId id;
+        bool visibility;
+        QString name;
+        float r,g,b;
+        uint8_t transparency;
+        DataId step_id;
+        QMatrix4x4 modelMatrix;
+        QVector<QVector<unsigned int>> polygons;
+        QVector<QVector<unsigned int>> texpolygons;
+        QVector<QVector3D> coords;
+        QVector<QVector2D> texcoords;
+        QImage image;
+        stream>>id;
+        stream>>visibility;
+        stream>>name;
+        stream>>r;
+        stream>>g;
+        stream>>b;
+        stream>>transparency;
+        stream>>step_id;
+        stream>>modelMatrix;
+        stream>>polygons;
+        stream>>texpolygons;
+        stream>>coords;
+        stream>>texcoords;
+        stream>>image;
+        QVector<VertexData> vertexes;
+        QVector<GLuint> indexes;
+        for(int j=0;j<polygons.size();j++)
+        {
+            vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
+            vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
+            vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
+            QVector3D a=vertexes[vertexes.size()-3].position;
+            QVector3D b=vertexes[vertexes.size()-2].position;
+            QVector3D c=vertexes[vertexes.size()-1].position;
+            QVector3D n1=QVector3D(c.x()-a.x(),c.y()-a.y(),c.z()-a.z());
+            QVector3D n2=QVector3D(b.x()-a.x(),b.y()-a.y(),b.z()-a.z());
+            QVector3D n=QVector3D(n1.y()*n2.z()-n1.z()*n2.y(),n1.z()*n2.x()-n1.x()*n2.z(),n1.x()*n2.y()-n1.y()*n2.x());
+            QVector3D norm=QVector3D(-n.x()/n.length(),-n.y()/n.length(),-n.z()/n.length());
+            vertexes[vertexes.size()-3].normal=norm;
+            vertexes[vertexes.size()-2].normal=norm;
+            vertexes[vertexes.size()-1].normal=norm;
+            indexes.append(indexes.size());
+            indexes.append(indexes.size());
+            indexes.append(indexes.size());
+            vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
+            vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
+            vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
+            a=vertexes[vertexes.size()-3].position;
+            b=vertexes[vertexes.size()-2].position;
+            c=vertexes[vertexes.size()-1].position;
+            n1=QVector3D(c.x()-a.x(),c.y()-a.y(),c.z()-a.z());
+            n2=QVector3D(b.x()-a.x(),b.y()-a.y(),b.z()-a.z());
+            n=QVector3D(n1.y()*n2.z()-n1.z()*n2.y(),n1.z()*n2.x()-n1.x()*n2.z(),n1.x()*n2.y()-n1.y()*n2.x());
+            norm=QVector3D(-n.x()/n.length(),-n.y()/n.length(),-n.z()/n.length());
+            vertexes[vertexes.size()-3].normal=norm;
+            vertexes[vertexes.size()-2].normal=norm;
+            vertexes[vertexes.size()-1].normal=norm;
+            indexes.append(indexes.size());
+            indexes.append(indexes.size());
+            indexes.append(indexes.size());
+        }
+        MeshModel* obj=new MeshModel(vertexes,indexes,image);
+        obj->polygons=polygons;
+        obj->texpolygons=texpolygons;
+        obj->coords=coords;
+        obj->texcoords=texcoords;
+        NrtlManager::createTransaction(NrtlManager::SYNC);
+        DataId mesh_id=RMeshModel::create(obj);
+        NrtlManager::commitTransaction();
+        MeshData::get().changeId(mesh_id,id);
+        MeshData::get().changeIdCounter(id+1);
+        RMeshModel::Name::set(id,name);
+        RMeshModel::Transperancy::set(id,transparency);
+        RMeshModel::Visibility::set(id,visibility);
+        RMeshModel::Step::set(id,step_id);
+        MeshData::get().getElement(id)->setModelMatrix(modelMatrix);
+        MeshData::get().getElement(id)->r=r;
+        MeshData::get().getElement(id)->g=g;
+        MeshData::get().getElement(id)->b=b;
     }
-    MeshModel* obj=new MeshModel(vertexes,indexes,image);
-    obj->polygons=polygons;
-    obj->texpolygons=texpolygons;
-    obj->coords=coords;
-    obj->texcoords=texcoords;
-    obj->border=border;
-    obj->polygonMatrix=polygonMatrix;
-    NrtlManager::createTransaction(NrtlManager::SYNC);
-    DataId mesh_id=RMeshModel::create(obj);
-    NrtlManager::commitTransaction();
-    MeshData::get().changeId(mesh_id,id);
-    RMeshModel::Name::set(id,name);
-    RMeshModel::Transperancy::set(id,transparency);
-    MeshData::get().getElement(id)->setModelMatrix(modelMatrix);
-    MeshData::get().getElement(id)->r=r;
-    MeshData::get().getElement(id)->g=g;
-    MeshData::get().getElement(id)->b=b;
-    MeshData::get().getElement(id)->setStep(step_id);
-    ROutlinerData::MainMesh::set(id);
-    RMeshModel::Visibility::makeVisibleOnlyOne(id);
-    ROutlinerData::WorkingStep::set(NONE);
     glWgt->update();
     outlinerWgt->update();
 }
+/*void RTractM::LtSurface::create()
+{
+    if(RSectionModel::Border::get(2).size()==0)
+    {
+        PolygonMatrix m=MeshTopology::makePolygonMatrix(MeshData::get().getElement(2));
+        RSectionModel::MatrixOfPolygons::set(2,m);
+        MeshBorder b=MeshTopology::makeBorder(MeshData::get().getElement(2));
+        if(b.size()==0)
+        {
+            QMessageBox::warning(this, "Warning", MeshTopology::errorString());
+        }
+        else
+            RSectionModel::Border::set(2,b);
+    }
+    if(RSectionModel::Border::get(3).size()==0)
+    {
+        PolygonMatrix m=MeshTopology::makePolygonMatrix(MeshData::get().getElement(3));
+        RSectionModel::MatrixOfPolygons::set(3,m);
+        MeshBorder b=MeshTopology::makeBorder(MeshData::get().getElement(3));
+        if(b.size()==0)
+        {
+            QMessageBox::warning(this, "Warning", MeshTopology::errorString());
+        }
+        else
+            RSectionModel::Border::set(3,b);
+    }
+    MeshModel* mesh=MeshTopology::makeSurface(MeshData::get().getElement(2),MeshData::get().getElement(3));
+    if(mesh!=nullptr)
+    {
+        NrtlManager::createTransaction(NrtlManager::SYNC);
+        outlinerWgt->addMainModel(mesh,"fsdc");
+        NrtlManager::commitTransaction();
+    }
+}*/

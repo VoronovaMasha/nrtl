@@ -36,7 +36,9 @@ public:
     void setModelMatrixToIdentity();
     void setPolygonMatrix(QVector<QVector<int>> a);
     QVector<QVector<unsigned int>> polygons;
+    QVector<QVector<unsigned int>> texpolygons;
     QVector<QVector3D> coords;
+    QVector<QVector2D> texcoords;
     QVector<QVector3D> border;
     QVector<QVector<int>> polygonMatrix;
     QImage image;
@@ -48,13 +50,13 @@ public:
     DataId step() { return _step_id; }
     void setStep(DataId id) { _step_id = id; }
     void setColor(QColor clr) { r = clr.red()/256.0; g = clr.green()/256.0; b = clr.blue()/256.0; }
+    float r,g,b;
 private:
     QOpenGLBuffer vertexBuffer, indexBuffer;
     QMatrix4x4 modelMatrix;
     QOpenGLTexture *mytexture;
     QString _name;
     uint8_t _transperancy;
-    float r,g,b;
     /*! \todo: Использовать наследование SectionModel::MeshModel */
     DataId _step_id;
 };
