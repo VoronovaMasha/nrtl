@@ -43,11 +43,6 @@ public slots:
     {
         return ViewMatrix2;
     }
-    void finder();
-    void connecting(unsigned int a,unsigned int b);
-    void makePolygonMatrix(int a);
-    int makeBorder(int a);
-    Data makeSidesOfTract(int a, int b, int numer, bool inverted);
 protected:
     void initializeGL();
     void resizeGL(int w,int h);
@@ -67,18 +62,9 @@ protected:
     QVector2D mousePosition;
     QQuaternion rotation;
 
-
-    QVector<MeshModel*> objects;
-    QVector<MeshModel*> sections;
-    QVector<MeshModel*> tracks;
-
     float z;
     float x;
     float y;
-
-    int tr_section;
-    int tr_model;
-    int tr_tract;
 
     QOpenGLFramebufferObject *mFBO=0;
 

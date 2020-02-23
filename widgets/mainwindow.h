@@ -21,6 +21,7 @@
 #include"resourcemanager.h"
 #include"groupeditorwidget.h"
 #include"tractwidget_simple.h"
+#include <QMessageBox>
 
 
 QT_BEGIN_NAMESPACE
