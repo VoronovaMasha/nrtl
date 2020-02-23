@@ -116,6 +116,7 @@ struct RMeshModel : public NrtlManager
     {
     public:
         static DataId get(DataId mesh);
+        static bool set(DataId mesh,DataId step_id);
     };
 
 };
