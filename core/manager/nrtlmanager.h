@@ -141,6 +141,31 @@ struct RSectionModel : public NrtlManager
         static bool get(DataId mesh_id);
     };
 
+    class ModelMatrix
+    {
+    public:
+        static bool set(DataId mesh_id, QMatrix4x4 mt);
+        static QMatrix4x4 get(DataId mesh_id);
+    };
+
+    class Converge
+    {
+        static QString _error_string;
+    public:
+        static MeshModel* convergesections(DataId mesh_1,DataId mesh_2);
+        static QString errorString()
+        {
+            return _error_string;
+        }
+    };
+
+    class GroupId
+    {
+    public:
+        static bool set(DataId section, IGroupId id);
+        static IGroupId get(DataId mesh);
+    };
+
     class Border
     {
     public:
@@ -153,20 +178,6 @@ struct RSectionModel : public NrtlManager
     public:
         static void set(DataId mesh_id, PolygonMatrix polygonMatrix);
         static PolygonMatrix get(DataId mesh_id);
-    };
-
-    class ModelMatrix
-    {
-    public:
-        static bool set(DataId mesh_id, QMatrix4x4 mt);
-        static QMatrix4x4 get(DataId mesh_id);
-    };
-
-    class GroupId
-    {
-    public:
-        static bool set(DataId section, IGroupId id);
-        static IGroupId get(DataId mesh);
     };
 
     class Step
