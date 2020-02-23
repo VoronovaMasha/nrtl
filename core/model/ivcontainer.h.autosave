@@ -51,6 +51,7 @@ public:
     void makeLast(DataId id);
 
     void changeId(DataId old_id,DataId new_id);
+    void changeIdCounter(DataId new_id);
 
 	DocType& create(bool visible=true);
 	DocType& allocate(bool visible = true);
@@ -256,6 +257,12 @@ void IVContainer<DocType>::changeId(DataId old_id,DataId new_id)
             break;
         }
     }
+}
+
+template<typename DocType>
+void IVContainer<DocType>::changeIdCounter(DataId new_id)
+{
+    idCounter=new_id;
 }
 
 template<typename DocType>
