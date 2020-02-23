@@ -75,7 +75,6 @@ bool RMeshModel::Visibility::get(DataId mesh_id)
     return model->meshData.isVisible(model->meshData.getElement(mesh_id));
 }
 
-
 bool RMeshModel::ModelMatrix::set(DataId mesh_id, QMatrix4x4 mt)
 {
     model->meshData.getElement(mesh_id)->setModelMatrix(mt);
