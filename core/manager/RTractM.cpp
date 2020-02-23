@@ -1,4 +1,5 @@
 #include "nrtlmanager.h"
+#include "MeshAlgorithm.h"
 DataId RTractM::create(IGroupId gid)
 {
     ITract* tr = new ITract();
@@ -82,4 +83,39 @@ bool RTractM::Visibility::get(DataId tr_id)
 {
     Q_UNUSED(tr_id)
     return true;
+}
+
+void RTractM::LtSurface::create()
+{
+    /*if(RSectionModel::Border::get(2).size()==0)
+    {
+        PolygonMatrix m=MeshTopology::makePolygonMatrix(MeshData::get().getElement(2));
+        RSectionModel::MatrixOfPolygons::set(2,m);
+        MeshBorder b=MeshTopology::makeBorder(MeshData::get().getElement(2));
+        if(b.size()==0)
+        {
+            QMessageBox::warning(this, "Warning", MeshTopology::errorString());
+        }
+        else
+            RSectionModel::Border::set(2,b);
+    }
+    if(RSectionModel::Border::get(3).size()==0)
+    {
+        PolygonMatrix m=MeshTopology::makePolygonMatrix(MeshData::get().getElement(3));
+        RSectionModel::MatrixOfPolygons::set(3,m);
+        MeshBorder b=MeshTopology::makeBorder(MeshData::get().getElement(3));
+        if(b.size()==0)
+        {
+            QMessageBox::warning(this, "Warning", MeshTopology::errorString());
+        }
+        else
+            RSectionModel::Border::set(3,b);
+    }
+    MeshModel* mesh=MeshTopology::makeSurface(MeshData::get().getElement(2),MeshData::get().getElement(3));
+    if(mesh!=nullptr)
+    {
+        NrtlManager::createTransaction(NrtlManager::SYNC);
+        outlinerWgt->addMainModel(mesh,"fsdc");
+        NrtlManager::commitTransaction();
+    }*/
 }

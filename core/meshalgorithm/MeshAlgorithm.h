@@ -7,21 +7,15 @@
 
 struct MeshTopology
 {
-    static PolygonMatrix makePolygonMatrix(MeshModel*)
+    static QString errorString()
     {
-        return {};
+        return _error_string;
     }
-
-    static MeshBorder makeBorder(MeshModel*, PolygonMatrix&)
-    {
-        return {};
-    }
-
-    static MeshModel* makeSurface(MeshBorder&, MeshBorder&)
-    {
-        return nullptr;
-    }
-
+    static PolygonMatrix makePolygonMatrix(MeshModel* mesh);
+    static MeshBorder makeBorder(MeshModel* mesh);
+    static MeshModel* makeSurface(MeshModel* a , MeshModel* b);
+private:
+    static QString _error_string;
 };
 
 

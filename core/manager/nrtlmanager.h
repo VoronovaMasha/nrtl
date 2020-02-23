@@ -134,11 +134,36 @@ struct RSectionModel : public NrtlManager
         static uint8_t get(DataId mesh_id);
     };
 
+    class Converge
+    {
+        static QString _error_string;
+    public:
+        static MeshModel* convergesections(DataId mesh_1,DataId mesh_2);
+        static QString errorString()
+        {
+            return _error_string;
+        }
+    };
+
     class Visibility
     {
     public:
         static bool set(DataId mesh_id, bool vis);
         static bool get(DataId mesh_id);
+    };
+
+    class Border
+    {
+    public:
+        static void set(DataId mesh_id, MeshBorder border);
+        static MeshBorder get(DataId mesh_id);
+    };
+
+    class MatrixOfPolygons
+    {
+    public:
+        static void set(DataId mesh_id, PolygonMatrix polygonMatrix);
+        static PolygonMatrix get(DataId mesh_id);
     };
 
     class ModelMatrix
