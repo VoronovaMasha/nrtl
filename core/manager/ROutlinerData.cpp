@@ -3,6 +3,15 @@
 bool ROutlinerData::StepList::add(DataId step_id)
 {
     model->outliner.addStep(step_id);
+    IStep* stp = getStep(step_id);
+    stp->group_section_map.clear();
+    stp->section_group_map.clear();
+
+    for(auto group : model->outliner.groups)
+    {
+        stp->group_section_map[group] = NONE;
+    }
+
     return true;
 }
 bool ROutlinerData::StepList::remove(DataId step_id)
