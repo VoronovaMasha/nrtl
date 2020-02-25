@@ -69,7 +69,9 @@ bool ROutlinerData::GroupList::remove(IGroupId group_id)
                                            group_id));
     for(auto stp : model->outliner.stepVec)
     {
+        DataId s_id = getStep(stp)->group_section_map[group_id];
         getStep(stp)->group_section_map.erase(group_id);
+        getStep(stp)->section_group_map[s_id] = IGroupId();
     }
     for(auto stp : model->outliner.stepVec)
     {

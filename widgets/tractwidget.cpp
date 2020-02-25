@@ -36,6 +36,17 @@ TractWidget::TractWidget(QWidget* parent) :
     this->setLayout(lout);*/
 }
 
+void TractWidget::update()
+{
+    tree->clear();
+    tree->setColumnCount(3);
+    for(auto tract : RTractM::get())
+    {
+        TractItem* tr_itm = new TractItem(RTractM::GroupId::get(tract), tract);
+        tree->addTopLevelItem(tr_itm);
+    }
+}
+
 void TractWidget::add_tract()
 {
     //Здесь должно открываться окно group и возвращать имя и иконку, далее эту информацию помещать в консруктор Tract,
@@ -69,69 +80,79 @@ void TractWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos
     QMenu * menu = new QMenu(this);
     currentIt = item;
 
-    for(auto i =0; i < v_tracts.size(); ++i)
-    {
-        TractItem *tract = v_tracts[i];
-        if(item == tract)
-        {
-            QAction * addDevice1 = new QAction("Rename", this);
-            QAction * addDevice2 = new QAction("Remove", this);
-            menu->addAction(addDevice1);
-            menu->addAction(addDevice2);
-            menu->popup(tree->viewport()->mapToGlobal(globalPos));
+    TractItem *tract = dynamic_cast<TractItem*>(item);
+    SectionItem *section = dynamic_cast<SectionItem*>(item);
+    LtSurfItem *surface = dynamic_cast<LtSurfItem*>(item);
 
-            connect(addDevice1, SIGNAL(triggered()), this, SLOT(rename()));
-            connect(addDevice2, SIGNAL(triggered()), this, SLOT(remove()));
-            break;
+    if(tract != nullptr)
+    {
+        QAction* addDevice1 = new QAction("Rename", this);
+        QAction* addDevice2 = new QAction(this);
+        bool vis = RTractM::Visibility::get(tract->_tr_id);
+        if(vis)
+        {
+            addDevice2 = new QAction("Hide", this);
+            menu->addAction(addDevice2);
         }
         else
         {
-            for(auto j = 0; j < tract->v_section_in_tract.size(); ++j)
-            {
-                if(item == tract->v_section_in_tract[j]){
-                    QAction * addDevice1 = new QAction("Transperancy", this);
-                    QAction * addDevice2;
-                    menu->addAction(addDevice1);
-                    if(tract->v_section_in_tract[j]->show)
-                    {
-                        addDevice2 = new QAction("Hide", this);
-                        menu->addAction(addDevice2);
-                    }
-                    else
-                    {
-                        addDevice2 = new QAction("Show", this);
-                        menu->addAction(addDevice2);
-                    }
-                    menu->popup(tree->viewport()->mapToGlobal(globalPos));
-                    connect(addDevice1, SIGNAL(triggered()), this, SLOT(transperancy()));
-                    connect(addDevice2, SIGNAL(triggered()), this, SLOT(ShowHide()));
-                    break;
-                }
-            }
-            for(auto j = 0; j < tract->v_bok_in_tract.size(); ++j)
-            {
-                if(item == tract->v_bok_in_tract[j]){
-                    QAction * addDevice1 = new QAction("Transperancy", this);
-                    QAction * addDevice2;
-                    menu->addAction(addDevice1);
-                    if(tract->v_bok_in_tract[j]->show)
-                    {
-                        addDevice2 = new QAction("Hide", this);
-                        menu->addAction(addDevice2);
-                    }
-                    else
-                    {
-                        addDevice2 = new QAction("Show", this);
-                        menu->addAction(addDevice2);
-                    }
-
-                    menu->popup(tree->viewport()->mapToGlobal(globalPos));
-                    connect(addDevice1, SIGNAL(triggered()), this, SLOT(transperancy()));
-                    connect(addDevice2, SIGNAL(triggered()), this, SLOT(ShowHide()));
-                    break;
-                }
-            }
+            addDevice2 = new QAction("Show", this);
+            menu->addAction(addDevice2);
         }
+        QAction* addDevice3 = new QAction("Remove", this);
+        menu->addAction(addDevice1);
+        menu->addAction(addDevice2);
+        menu->addAction(addDevice3);
+        menu->popup(tree->viewport()->mapToGlobal(globalPos));
+
+        connect(addDevice1, SIGNAL(triggered()), this, SLOT(rename()));
+        connect(addDevice2, &QAction::triggered,
+                [tract, vis](){ RTractM::Visibility::set(tract->_tr_id, !vis ); });
+        connect(addDevice3, SIGNAL(triggered()), this, SLOT(remove()));
+        return;
+    }
+
+    if(section != nullptr)
+    {
+        QAction * addDevice1 = new QAction("Transperancy", this);
+        QAction * addDevice2;
+        menu->addAction(addDevice1);
+        if(RSectionModel::Visibility::get(section->id))
+        {
+            addDevice2 = new QAction("Hide", this);
+            menu->addAction(addDevice2);
+        }
+        else
+        {
+            addDevice2 = new QAction("Show", this);
+            menu->addAction(addDevice2);
+        }
+        menu->popup(tree->viewport()->mapToGlobal(globalPos));
+        connect(addDevice1, SIGNAL(triggered()), this, SLOT(transperancy()));
+        connect(addDevice2, &QAction::triggered, [](){});
+        return;
+    }
+
+    if(surface != nullptr)
+    {
+        QAction * addDevice1 = new QAction("Transperancy", this);
+        QAction * addDevice2;
+        menu->addAction(addDevice1);
+        if(RTractM::Visibility::get(surface->id_bok))
+        {
+            addDevice2 = new QAction("Hide", this);
+            menu->addAction(addDevice2);
+        }
+        else
+        {
+            addDevice2 = new QAction("Show", this);
+            menu->addAction(addDevice2);
+        }
+
+        menu->popup(tree->viewport()->mapToGlobal(globalPos));
+        connect(addDevice1, SIGNAL(triggered()), this, SLOT(transperancy()));
+        connect(addDevice2, SIGNAL(triggered()), this, SLOT(ShowHide()));
+        return;
     }
 }
 
@@ -145,7 +166,12 @@ void TractWidget::rename(){
 
 void TractWidget::remove()
 {
-    qDebug() << "здесь будет удаление трактов";
+    TractItem* itm =
+            dynamic_cast<TractItem*>(list->currentItem());
+    if(itm != nullptr)
+    {
+        RTractM::remove(itm->_tr_id);
+    }
 }
 
 
@@ -164,7 +190,7 @@ void TractWidget :: change(QString s){
 
 void TractWidget::ShowHide()
 {
-    QTreeWidgetItem *item = tree->currentItem();
+/*    QTreeWidgetItem *item = tree->currentItem();
     for(auto i =0; i < v_tracts.size(); ++i)
     {
         TractItem *tract = v_tracts[i];
@@ -194,7 +220,7 @@ void TractWidget::ShowHide()
                     break;
                 }
             }
-        }
+        }*/
 }
 
 void TractWidget::transperancy()

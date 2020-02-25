@@ -74,12 +74,24 @@ bool RTractM::Visibility::set(DataId tr_id, bool vis)
         {
             RMeshModel::Visibility::set(surf, vis);
         }
+        tract->vis = vis;
         return true;
     }
     return false;
 }
 bool RTractM::Visibility::get(DataId tr_id)
 {
-    Q_UNUSED(tr_id)
-    return true;
+    ITract* tract = nullptr;
+
+    for(size_t i = 0; i < model->tractLst.size(); ++i)
+    {
+        if(model->tractLst[i]->_tr_id == tr_id)
+        {
+            tract = model->tractLst[i];
+        }
+    }
+
+    if(tract != nullptr)
+        return tract->vis;
+    return false;
 }

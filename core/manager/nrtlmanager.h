@@ -339,6 +339,20 @@ struct RTractM : public NrtlManager
 
     };
 
+    class GroupId
+    {
+    public:
+        static IGroupId get(DataId tract)
+        {
+            for(auto el : model->tractLst)
+            {
+                if(el->_tr_id == tract)
+                    return el->groupId;
+            }
+            return IGroupId();
+        }
+    };
+
 };
 
 #endif //NRTLMANAGER_H

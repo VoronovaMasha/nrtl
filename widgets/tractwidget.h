@@ -48,7 +48,7 @@ public:
 
 class LtSurfItem : public QTreeWidgetItem{
 public:
-    int id_bok;
+    DataId id_bok;
     bool show = true;
     LtSurfItem():QTreeWidgetItem(){}
 };
@@ -83,9 +83,8 @@ public:
         //sections->addChild(sect_1);
         //contours->setText(0,"Contours");
         this->setText(0, gid._name);
-        this->addChild(sections);
-        this->addChild(bok);
-
+//        this->addChild(sections);
+//        this->addChild(bok);
         //parent->addChild(contours);
      }
 };
@@ -97,7 +96,7 @@ public:
     TractWidget(QWidget* parent=nullptr);
 public slots:
     void make_tracts();
-
+    void update();
 private slots:
     void add_tract();
     void slotCustomMenuRequested(QPoint);
@@ -118,6 +117,7 @@ private:
     QVector<TractItem*> v_tracts;
     int how_many_step = 1;
     QTreeWidgetItem *currentIt;
+
     //QTreeWidgetItem *mainMesh;
 };
 

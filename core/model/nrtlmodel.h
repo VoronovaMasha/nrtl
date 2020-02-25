@@ -14,6 +14,7 @@ struct ITract
     IGroupId groupId;
     DataId _tr_id;
     ResourceList secLst, latSurfLst;
+    bool vis;
 };
 
 class NrtlModel
