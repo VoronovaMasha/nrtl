@@ -88,7 +88,6 @@ FORMS += \
     widgets/dialog1.ui \
     widgets/dialog2.ui
 
-
 RESOURCES += resources.qrc
 
 # Default rules for deployment.
