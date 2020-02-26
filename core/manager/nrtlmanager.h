@@ -45,6 +45,7 @@ public:
     {
         return QString("Error");
     }
+    static IStep* getStep(DataId id);
 
 protected:
 	static NrtlModel* model;
@@ -52,7 +53,6 @@ protected:
     /*! \todo: переместить в модель */
     static std::vector<IStep*> stepLst;
     static DataId stepIdCounter;
-    static IStep* getStep(DataId id);
     static std::vector<IGroupId> groupLst;
     static int groupIdCounter;
 };
@@ -200,6 +200,8 @@ class RStep : public NrtlManager
 public:
     static DataId create(const QString& name);
     static bool remove(DataId step_id);
+    static bool changeId(DataId old_step_id,DataId new_step_id);
+    static bool changeStepIdCounter(DataId new_step_id_counter);
 
     class Name
     {
@@ -221,6 +223,7 @@ public:
         static bool add(DataId step_id, DataId section_id);
         static bool remove(DataId step_id, DataId id);
         static RSectionList& get(DataId step_id);
+        static bool set(DataId step_id,RSectionList secLst);
     };
 };
 
@@ -257,6 +260,7 @@ public:
         static bool remove(DataId step_id);
         static RStepList& get();
         static bool relocate(DataId step_id, int pos);
+        static bool changeId(DataId old_step_id,DataId new_step_id);
     };
 
     class GroupList
@@ -265,6 +269,9 @@ public:
         static bool add(IGroupId group);
         static bool remove(IGroupId group_id);
         static RGroupList& get();
+        static bool changeIdCounter(int newIdCounter);
+        static bool setGroupLstInOutliner(std::vector<IGroupId> groupLst);
+        static bool setGroupLstInManagers(std::vector<IGroupId> groupLst);
     };
 
     class MainMesh

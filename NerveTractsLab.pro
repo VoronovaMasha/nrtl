@@ -47,8 +47,10 @@ SOURCES += \
     opengl/oglareawidget.cpp \
     $$WGTPATH/groupeditorwidget.cpp \
     $$WGTPATH/setcolor.cpp \
-    $$WGTPATH/tractwidget_simple.cpp \
+    $$WGTPATH/tractwidget.cpp \
     widgets/allignwindow.cpp \
+    widgets/dialog1.cpp \
+    widgets/dialog2.cpp \
     widgets/mainwindow.cpp \
     widgets/outlinerwidget.cpp \
     widgets/renamestepdialog.cpp \
@@ -67,8 +69,10 @@ HEADERS += \
     opengl/oglareawidget.h \
     $$WGTPATH/groupeditorwidget.h \
     $$WGTPATH/setcolor.h \
-    $$WGTPATH/tractwidget_simple.h \
+    $$WGTPATH/tractwidget.h \
     widgets/allignwindow.h \
+    widgets/dialog1.h \
+    widgets/dialog2.h \
     widgets/mainwindow.h \
     widgets/outlinerwidget.h \
     widgets/renamestepdialog.h \
@@ -80,7 +84,10 @@ FORMS += \
     ui/allignwindow.ui \
     ui/dialog.ui \
     ui/mainwindow.ui \
-    ui/transparencydialog.ui
+    ui/transparencydialog.ui \
+    widgets/dialog1.ui \
+    widgets/dialog2.ui
+
 
 RESOURCES += resources.qrc
 

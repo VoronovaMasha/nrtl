@@ -86,7 +86,7 @@ void OutlinerWidget::update()
     for(unsigned int i=0;i<stepList.size();i++)
     {
         QString name_step=RStep::Name::get(stepList[i]);
-        Step *st = new Step();
+        StepItem *st = new StepItem();
         tree->addTopLevelItem(st);
         if(stepList[i]==current_step)
         {
@@ -120,7 +120,7 @@ void OutlinerWidget::update()
             for(unsigned int j=1;j<sectionList.size();j++)
             {
                 section_name= QString("    ") + RMeshModel::Name::get(sectionList[j]);
-                Section *child_for_section = new Section();
+                SectionItem *child_for_section = new SectionItem();
                 child_for_section->setText(1,section_name);
                 gid = RSectionModel::GroupId::get(sectionList[j]);
                 group_name = gid == NONE ? "no group" : gid._name;
@@ -192,7 +192,7 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
     }
     for(auto i = 0; i < v_steps.size(); i++)
     {
-        Step *q = v_steps[i];
+        StepItem *q = v_steps[i];
         if (item == q)
         {
             QAction * addDevice = new QAction("Rename step", this);
@@ -329,7 +329,7 @@ void OutlinerWidget::deleteMesh()
     }
     for(auto i = 0; i < v_steps.size(); i++)
     {
-        Step *q = v_steps[i];
+        StepItem *q = v_steps[i];
         if(item == q->cut)
         {
             DataId id=RStep::MeshCut::get(q->id);
@@ -363,7 +363,7 @@ void OutlinerWidget::change(QString s)
     }
     for(auto i = 0; i < v_steps.size(); i++)
     {
-        Step *q = v_steps[i];
+        StepItem *q = v_steps[i];
         if (item == q)
         {
             RStep::Name::set(q->id,s);
@@ -388,7 +388,7 @@ void OutlinerWidget::change(QString s)
 
 void OutlinerWidget::make_step_current()
 {
-    Step* stp = dynamic_cast<Step*>(tree->currentItem());
+    StepItem* stp = dynamic_cast<StepItem*>(tree->currentItem());
     if(stp != nullptr)
     {
         DataId step_id = stp->id;
@@ -419,7 +419,7 @@ void OutlinerWidget::makeSectionVisible()
     QTreeWidgetItem *item = tree->currentItem();
     for(auto i = 0; i < v_steps.size(); i++)
     {
-        Step *q = v_steps[i];
+        StepItem *q = v_steps[i];
         for(auto j = 0; j<q->v_section_in_sect.size();j++)
         {
             if(item == q->v_section_in_sect[j])
@@ -449,7 +449,7 @@ void OutlinerWidget::changeTransparency()
         id=ROutlinerData::MainMesh::get();
     for(auto i = 0; i < v_steps.size(); i++)
     {
-        Step *q = v_steps[i];
+        StepItem *q = v_steps[i];
         if(item == q->cut)
             id=RStep::MeshCut::get(q->id);
         else

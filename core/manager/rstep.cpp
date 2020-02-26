@@ -9,6 +9,27 @@ DataId RStep::create(const QString& name)
     return stp->stepId;
 }
 
+bool RStep::changeStepIdCounter(DataId new_step_id_counter)
+{
+    stepIdCounter=new_step_id_counter;
+    return true;
+}
+
+bool RStep::changeId(DataId old_step_id,DataId new_step_id)
+{
+    auto it = stepLst.begin();
+    for (; it != stepLst.end(); ++it)
+    {
+        if ((*it)->stepId == old_step_id)
+        {
+            (*it)->stepId=new_step_id;
+            break;
+        }
+    }
+    ROutlinerData::StepList::changeId(old_step_id,new_step_id);
+    return true;
+}
+
 bool RStep::remove(DataId step_id)
 {
     model->outliner.deleteStep(step_id);
@@ -51,6 +72,11 @@ bool RStep::SectionList::add(DataId step_id, DataId section_id)
     getStep(step_id)->meshSectionIds.push_back(section_id);
     getStep(step_id)->section_group_map[section_id] = NONE;
     model->meshData.getElement(section_id)->setStep(step_id);
+    return true;
+}
+bool RStep::SectionList::set(DataId step_id,RSectionList secLst)
+{
+    getStep(step_id)->meshSectionIds=secLst;
     return true;
 }
 bool RStep::SectionList::remove(DataId step_id, DataId section_id)

@@ -90,10 +90,10 @@ bool RSectionModel::GroupId::set(DataId section_id, IGroupId group_id)
     DataId _prev_section;
 
     /* 1. Разорвать старые связи */
-    _prev_group = stp->section_group_map.at(section_id);
+    _prev_group = stp->section_group_map[section_id];
     if(group_id._id != NONE)
     {
-        _prev_section = stp->group_section_map.at(group_id);
+        _prev_section = stp->group_section_map[group_id];
         stp->section_group_map[_prev_section] = NONE;
     }
     if(_prev_group._id != NONE)
