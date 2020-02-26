@@ -45,6 +45,7 @@ void TractWidget::update()
         TractItem* tr_itm = new TractItem(RTractM::GroupId::get(tract), tract);
         tree->addTopLevelItem(tr_itm);
     }
+    emit update_tract_tree();
 }
 
 void TractWidget::add_tract()
@@ -107,7 +108,7 @@ void TractWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos
 
         connect(addDevice1, SIGNAL(triggered()), this, SLOT(rename()));
         connect(addDevice2, &QAction::triggered,
-                [tract, vis](){ RTractM::Visibility::set(tract->_tr_id, !vis ); });
+                [tract, vis, this](){ RTractM::Visibility::set(tract->_tr_id, !vis ); update(); });
         connect(addDevice3, SIGNAL(triggered()), this, SLOT(remove()));
         return;
     }
@@ -161,6 +162,7 @@ void TractWidget::rename(){
     connect (d1, SIGNAL (send_name(QString)),
              this, SLOT(change(QString)));
     d1->exec();
+    update();
 }
 
 
@@ -172,6 +174,7 @@ void TractWidget::remove()
     {
         RTractM::remove(itm->_tr_id);
     }
+    update();
 }
 
 
@@ -186,6 +189,7 @@ void TractWidget :: change(QString s){
             break;
         }
     }
+    update();
 }
 
 void TractWidget::ShowHide()

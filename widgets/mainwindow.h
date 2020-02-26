@@ -102,6 +102,7 @@ private slots:
     void LoadDoc_clicked();
     void updateProgressBar(int val);
 signals:
+    void update();
     void startMeshLoading();
 private:
     Ui::MainWindow *ui;

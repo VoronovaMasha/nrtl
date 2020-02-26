@@ -42,6 +42,9 @@ public:
             return dynamic_cast<GroupItem*>(mainList->currentItem())->_group;
         }
     }
+
+signals:
+    void update_group_tree();
 private:
     QWidget *wid;
     QListWidget *mainList;

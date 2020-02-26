@@ -94,6 +94,8 @@ class TractWidget : public QWidget
     Q_OBJECT
 public:
     TractWidget(QWidget* parent=nullptr);
+signals:
+    void update_tract_tree();
 public slots:
     void make_tracts();
     void update();

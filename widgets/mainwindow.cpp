@@ -149,6 +149,10 @@ MainWindow::MainWindow(QWidget *parent)
     connect(tListener, &QThread::finished, [](){ qDebug() << "Listener Thread finished "; });
     connect(tLoader, &QThread::finished, [](){ qDebug() << "Loader Thread finished "; });
 
+    connect(grWgt, &GroupEditorWidget::update_group_tree, outlinerWgt, &OutlinerWidget::update);
+    connect(tractWgt, &TractWidget::update_tract_tree, outlinerWgt, &OutlinerWidget::update);
+    connect(tractWgt, &TractWidget::update_tract_tree, glWgt, &OGLAreaWidget::updater);
+
     /** Place **/
     menu->addAction(act_NewDoc);
     menu->addAction(act_LoadObj);

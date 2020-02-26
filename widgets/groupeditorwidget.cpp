@@ -38,6 +38,7 @@ void GroupEditorWidget::rewrite()
         itm->_group = group;
         mainList->addItem(itm);
     }
+    emit update_group_tree();
 }
 
 void GroupEditorWidget::slotCustomMenuRequested(QPoint pos)
