@@ -26,7 +26,7 @@ class GroupEditorWidget : public QWidget
 {
 Q_OBJECT
 public:
-    GroupEditorWidget(QWidget* parent);
+    GroupEditorWidget(QWidget* parent, bool edit=true);
     void rewrite();
     IGroupId getCurrentId()
     {
@@ -50,11 +50,12 @@ private:
 //    QMap< QListWidgetItem*, QPair<QString,QIcon>> mapLink;
 //    QMap<QString,QIcon> textIcon;
     QLineEdit *line;
+    bool _edit;
 
 public slots:
    void select_color();
    void add_group(QColor clr, QString name);
-   QIcon makeIcon(QColor clr);
+   static QIcon makeIcon(QColor clr);
    void slotCustomMenuRequested(QPoint);
    void showContextMenu(const QPoint& globalPos);
    void window_rename();

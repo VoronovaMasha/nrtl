@@ -20,7 +20,7 @@
 #include"outlinerwidget.h"
 #include"resourcemanager.h"
 #include"groupeditorwidget.h"
-#include"tractwidget_simple.h"
+#include"tractwidget.h"
 #include <QMessageBox>
 
 
@@ -139,7 +139,7 @@ private:
     QAction* act_ResMan;
 
     OutlinerWidget* outlinerWgt;
-    TractWidget_simple* tractWgt;
+    TractWidget* tractWgt;
 
     NrtlModel* model;
 

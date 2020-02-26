@@ -12,8 +12,8 @@
 
 #include "nrtlmanager.h"
 
-GroupEditorWidget::GroupEditorWidget(QWidget* parent) :
-    QWidget(parent)
+GroupEditorWidget::GroupEditorWidget(QWidget* parent, bool edit) :
+    QWidget(parent), _edit(edit)
 {
     boxV = new QVBoxLayout(this);
     mainList = new QListWidget();
@@ -21,7 +21,8 @@ GroupEditorWidget::GroupEditorWidget(QWidget* parent) :
     mainList->setIconSize(QSize(50,50));
     addGroupBtn = new QPushButton("Add group");
     boxV->addWidget(mainList);
-    boxV->addWidget(addGroupBtn);
+    if(edit)
+        boxV->addWidget(addGroupBtn);
     connect(addGroupBtn, SIGNAL(clicked()), this, SLOT(select_color()));
     connect(mainList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotCustomMenuRequested(QPoint)));
 }

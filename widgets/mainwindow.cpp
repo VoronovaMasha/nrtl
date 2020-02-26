@@ -59,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
     act_ResMan = new QAction("Resource Manager");
 
     outlinerWgt = new OutlinerWidget();
-    tractWgt = new TractWidget_simple();
+    tractWgt = new TractWidget();
 
     res_man_wnd = new ResourceManager(this);
     res_man_wnd->close();
@@ -440,6 +440,46 @@ void MainWindow::SaveDocAs_clicked()
         stream<<MeshData::get().getElement(modelIds[i])->texcoords;
         stream<<MeshData::get().getElement(modelIds[i])->image;
     }
+    std::vector<IGroupId> groupLst;
+    groupLst=ROutlinerData::GroupList::get();
+    stream<<groupLst.size();
+    for(unsigned int i=0;i<groupLst.size();i++)
+    {
+        stream<<groupLst[i]._id;
+        stream<<GroupId::Name::get(groupLst[i]);
+        stream<<GroupId::Color::get(groupLst[i]);
+    }
+    RStepList stepLst=ROutlinerData::StepList::get();
+    stream<<stepLst.size();
+    for(unsigned int i=0;i<stepLst.size();i++)
+    {
+        stream<<stepLst[i];
+        stream<<RStep::Name::get(stepLst[i]);
+        stream<<RStep::MeshCut::get(stepLst[i]);
+        stream<<RStep::SectionList::get(stepLst[i]).size();
+        for(unsigned int j=0;j<RStep::SectionList::get(stepLst[i]).size();j++)
+            stream<<RStep::SectionList::get(stepLst[i])[j];
+        std::unordered_map<DataId, IGroupId, DataHash> map1=NrtlManager::getStep(stepLst[i])->section_group_map;
+        stream<<map1.size();
+        for(auto it=map1.begin();it!=map1.end();it++)
+        {
+            stream<<it->first;
+            stream<<(it->second)._id;
+            stream<<(it->second)._name;
+            stream<<(it->second)._color;
+        }
+        std::unordered_map<IGroupId, DataId, GroupHash> map2=NrtlManager::getStep(stepLst[i])->group_section_map;
+        stream<<map2.size();
+        for(auto it=map2.begin();it!=map2.end();it++)
+        {
+            stream<<(it->first)._id;
+            stream<<(it->first)._name;
+            stream<<(it->first)._color;
+            stream<<it->second;
+        }
+    }
+    stream<<ROutlinerData::MainMesh::get();
+    stream<<ROutlinerData::WorkingStep::get();
     file.close();
 }
 
@@ -490,9 +530,18 @@ void MainWindow::LoadDoc_clicked()
         QVector<GLuint> indexes;
         for(int j=0;j<polygons.size();j++)
         {
-            vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
-            vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
-            vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
+            if(texpolygons.size()!=0 && texcoords.size()!=0)
+            {
+                vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
+            }
+            else
+            {
+                vertexes.append(VertexData(coords[polygons[j][0]-1],QVector2D(0.0,0.0),QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][1]-1],QVector2D(0.0,1.0),QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][2]-1],QVector2D(1.0,0.0),QVector3D(1.0,0.0,0.0)));
+            }
             QVector3D a=vertexes[vertexes.size()-3].position;
             QVector3D b=vertexes[vertexes.size()-2].position;
             QVector3D c=vertexes[vertexes.size()-1].position;
@@ -506,9 +555,18 @@ void MainWindow::LoadDoc_clicked()
             indexes.append(indexes.size());
             indexes.append(indexes.size());
             indexes.append(indexes.size());
-            vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
-            vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
-            vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
+            if(texpolygons.size()!=0 && texcoords.size()!=0)
+            {
+                vertexes.append(VertexData(coords[polygons[j][2]-1],texcoords[texpolygons[j][2]-1],QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][1]-1],texcoords[texpolygons[j][1]-1],QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][0]-1],texcoords[texpolygons[j][0]-1],QVector3D(1.0,0.0,0.0)));
+            }
+            else
+            {
+                vertexes.append(VertexData(coords[polygons[j][2]-1],QVector2D(0.0,0.0),QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][1]-1],QVector2D(0.0,1.0),QVector3D(1.0,0.0,0.0)));
+                vertexes.append(VertexData(coords[polygons[j][0]-1],QVector2D(1.0,0.0),QVector3D(1.0,0.0,0.0)));
+            }
             a=vertexes[vertexes.size()-3].position;
             b=vertexes[vertexes.size()-2].position;
             c=vertexes[vertexes.size()-1].position;
@@ -542,8 +600,86 @@ void MainWindow::LoadDoc_clicked()
         MeshData::get().getElement(id)->g=g;
         MeshData::get().getElement(id)->b=b;
     }
-    glWgt->update();
+    stream>>size;
+    std::vector<IGroupId> groupLst;
+    for(unsigned int i=0;i<size;i++)
+    {
+        int id;
+        QString name;
+        QColor color;
+        stream>>id;
+        stream>>name;
+        stream>>color;
+        groupLst.push_back(IGroupId(id,name,color));
+        ROutlinerData::GroupList::changeIdCounter(id+1);
+    }
+    ROutlinerData::GroupList::setGroupLstInManagers(groupLst);
+    ROutlinerData::GroupList::setGroupLstInOutliner(groupLst);
+    stream>>size;
+    for(unsigned int i=0;i<size;i++)
+    {
+        DataId id;
+        QString name;
+        DataId meshCutId;
+        unsigned int secSize;
+        stream>>id;
+        stream>>name;
+        stream>>meshCutId;
+        stream>>secSize;
+        RSectionList meshSectionIds;
+        for(unsigned int j=0;j<secSize;j++)
+        {
+            DataId secId;
+            stream>>secId;
+            meshSectionIds.push_back(secId);
+        }
+        std::unordered_map<DataId, IGroupId, DataHash> map1;
+        unsigned int mapSize;
+        stream>>mapSize;
+        for(unsigned int j=0;j<mapSize;j++)
+        {
+            DataId mapSecId;
+            int mapGroupId;
+            QString mapGroupName;
+            QColor mapGroupColor;
+            stream>>mapSecId;
+            stream>>mapGroupId;
+            stream>>mapGroupName;
+            stream>>mapGroupColor;
+            map1[mapSecId]=IGroupId(mapGroupId,mapGroupName,mapGroupColor);
+        }
+        std::unordered_map<IGroupId, DataId, GroupHash> map2;
+        stream>>mapSize;
+        for(unsigned int j=0;j<mapSize;j++)
+        {
+            DataId mapSecId;
+            int mapGroupId;
+            QString mapGroupName;
+            QColor mapGroupColor;
+            stream>>mapGroupId;
+            stream>>mapGroupName;
+            stream>>mapGroupColor;
+            stream>>mapSecId;
+            map2[IGroupId(mapGroupId,mapGroupName,mapGroupColor)]=mapSecId;
+        }
+        DataId stepId=RStep::create(name);
+        ROutlinerData::StepList::add(stepId);
+        RStep::changeId(stepId,id);
+        NrtlManager::getStep(id)->section_group_map=map1;
+        NrtlManager::getStep(id)->group_section_map=map2;
+        RStep::MeshCut::set(id,meshCutId);
+        RStep::SectionList::set(id,meshSectionIds);
+        RStep::changeStepIdCounter(id+1);
+    }
+    DataId mainMeshId;
+    stream>>mainMeshId;
+    ROutlinerData::MainMesh::set(mainMeshId);
+    DataId workingStep;
+    stream>>workingStep;
+    ROutlinerData::WorkingStep::set(workingStep);
     outlinerWgt->update();
+    grWgt->rewrite();
+    glWgt->update();
 }
 /*void RTractM::LtSurface::create()
 {

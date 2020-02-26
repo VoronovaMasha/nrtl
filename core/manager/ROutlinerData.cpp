@@ -10,6 +10,18 @@ bool ROutlinerData::StepList::remove(DataId step_id)
     model->outliner.deleteStep(step_id);
     return true;
 }
+bool ROutlinerData::StepList::changeId(DataId old_step_id,DataId new_step_id)
+{
+    for(unsigned int i=0;i<model->outliner.stepVec.size();i++)
+    {
+        if(model->outliner.stepVec[i]==old_step_id)
+        {
+            model->outliner.stepVec[i]==new_step_id;
+            break;
+        }
+    }
+    return true;
+}
 RStepList& ROutlinerData::StepList::get()
 {
     return model->outliner.stepVec;
@@ -35,6 +47,12 @@ bool ROutlinerData::GroupList::add(IGroupId group)
     return true;
 }
 
+bool ROutlinerData::GroupList::changeIdCounter(int newIdCounter)
+{
+    groupIdCounter=newIdCounter;
+    return true;
+}
+
 bool ROutlinerData::GroupList::remove(IGroupId group_id)
 {
     model->outliner.groups.erase(std::find(model->outliner.groups.begin(),
@@ -44,7 +62,28 @@ bool ROutlinerData::GroupList::remove(IGroupId group_id)
     {
         getStep(stp)->group_section_map.erase(group_id);
     }
-
+    for(auto stp : model->outliner.stepVec)
+    {
+        auto map=getStep(stp)->section_group_map;
+        for(auto it=map.begin();it!=map.end();it++)
+        {
+            if(it->second==group_id)
+            {
+                RSectionModel::GroupId::set(it->first,NONE);
+                model->meshData.getElement(it->first)->setColor(QColor(0,0,0));
+            }
+        }
+    }
+    return true;
+}
+bool ROutlinerData::GroupList::setGroupLstInOutliner(std::vector<IGroupId> new_groupLst)
+{
+    groupLst=new_groupLst;
+    return true;
+}
+bool ROutlinerData::GroupList::setGroupLstInManagers(std::vector<IGroupId> new_groupLst)
+{
+    model->outliner.groups=new_groupLst;
     return true;
 }
 RGroupList& ROutlinerData::GroupList::get()

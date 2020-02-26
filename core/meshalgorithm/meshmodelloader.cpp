@@ -197,7 +197,7 @@ void MeshModelLoader::OBJ::loadMesh()
         if(is_picture)
             mesh=new SimpleMesh(vertexes,indexes,QImage(picture));
         else
-            mesh=new SimpleMesh(vertexes,indexes,QImage(":/cube.png"));
+            mesh=new SimpleMesh(vertexes,indexes,QImage(":/img/textures/cube.png"));
         mesh->polygons=polygons;
         mesh->texpolygons=texpolygons;
         mesh->coords=coords;

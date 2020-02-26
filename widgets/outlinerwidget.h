@@ -10,16 +10,15 @@
 #include<QHeaderView>
 #include"nrtlmanager.h"
 
-class Section : public QTreeWidgetItem
+class SectionItem : public QTreeWidgetItem
 {
 public:
     DataId id;
-    Section():QTreeWidgetItem(){}
+    SectionItem():QTreeWidgetItem(){}
+    bool show;
 };
 
-
-
-class Step : public QTreeWidgetItem
+class StepItem : public QTreeWidgetItem
 {
 private:
 public:
@@ -27,13 +26,13 @@ public:
      int how_many_section = 1;
      QTreeWidgetItem *cut;
      QTreeWidgetItem *sections;
-     Section *sect_1;
-     QVector<Section*> v_section_in_sect;
-     Step()
+     SectionItem *sect_1;
+     QVector<SectionItem*> v_section_in_sect;
+     StepItem()
      {
         cut = new QTreeWidgetItem();
         sections = new QTreeWidgetItem();
-        sect_1 = new Section();
+        sect_1 = new SectionItem();
         cut->setText(1,"No cut");
         sections->setText(1,"Sections");
         sect_1->setText(1,"    No sections");
@@ -47,15 +46,6 @@ public:
 class OutlinerWidget : public QWidget
 {
 Q_OBJECT
-private:
-    QVBoxLayout *lout;
-    QTreeWidget *tree;
-    QTreeWidgetItem *currentIt;
-    QTreeWidgetItem *mainMesh;
-    QPushButton *addStepBtn;
-    QVector<Step*> v_steps;
-    QAction* act_loadObj;
-    int how_many_step = 1;
 
 signals:
     void need_update();
@@ -96,7 +86,18 @@ private slots:
     void makeMainMeshVisible();
     void changeTransparency();
     void setTransparency(int value,DataId id);
-
+private:
+    QVBoxLayout *lout;
+    QTreeWidget *tree;
+    QTreeWidgetItem *currentIt;
+    QTreeWidgetItem *mainMesh;
+    QPushButton *addStepBtn;
+    QVector<StepItem*> v_steps;
+    QAction* act_loadObj;
+    int how_many_step = 1;
 };
+
+
+
 
 #endif // OUTLINERCLASS_H
