@@ -107,10 +107,6 @@ signals:
 private:
     Ui::MainWindow *ui;
 
-    QGraphicsView* view;
-    QGraphicsScene* scene;
-    QBrush* brush;
-
     OGLAreaWidget* glWgt;
 
     QDockWidget* dock_Outliner;

@@ -40,6 +40,7 @@ public:
     static void commitTransaction();
     static void undo() {}
     static void redo() {}
+    static void restart();
 
     static QString errorString()
     {
@@ -293,6 +294,11 @@ struct RTractM : public NrtlManager
 {
     static DataId create(IGroupId gid);
     static bool remove(DataId);
+
+    static std::vector<ITract*> getTractLst();
+    static bool setTractLst(std::vector<ITract*> newTractLst);
+    static DataId getIdCounter();
+    static bool setIdCounter(DataId newIdCounter);
     static ResourceList get()
     {
         std::vector<DataId> id_vec;
@@ -362,6 +368,20 @@ struct RTractM : public NrtlManager
         }
     };
 
+};
+
+struct ProjectOptions : public NrtlManager
+{
+    class Loader
+    {
+    public:
+        static bool loadProject(QString filename);
+    };
+    class Saver
+    {
+    public:
+        static bool saveProject(QString filename);
+    };
 };
 
 #endif //NRTLMANAGER_H

@@ -33,6 +33,24 @@ bool RTractM::remove(DataId tr_id)
     }
     return false;
 }
+std::vector<ITract*> RTractM::getTractLst()
+{
+    return model->tractLst;
+}
+bool RTractM::setTractLst(std::vector<ITract*> newTractLst)
+{
+    model->tractLst=newTractLst;
+    return true;
+}
+DataId RTractM::getIdCounter()
+{
+    return model->tractIdCounter;
+}
+bool RTractM::setIdCounter(DataId newIdCounter)
+{
+    model->tractIdCounter=newIdCounter;
+    return true;
+}
 bool RTractM::Name::set(DataId tr_id, const QString& name)
 {
     for(size_t i = 0; i < model->tractLst.size(); ++i)

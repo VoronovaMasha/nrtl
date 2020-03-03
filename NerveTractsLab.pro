@@ -31,6 +31,7 @@ SOURCES += \
     core/manager/ROutlinerData.cpp \
     core/manager/RTractM.cpp \
     core/manager/nrtlmanager.cpp \
+    core/manager/projectoptions.cpp \
     core/manager/rgroupid.cpp \
     core/manager/rmeshmodel.cpp \
     core/manager/rsectionmodel.cpp \

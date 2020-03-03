@@ -11,6 +11,14 @@ int NrtlManager::groupIdCounter = 1;
 TransactionSM::TransactionState TransactionSM::t_state = TransactionSM::TransactionState::WAIT;
 TransactionSM::TransactionType TransactionSM::t_type = TransactionSM::TransactionType::SYNC;
 
+void NrtlManager::restart()
+{
+    model = new NrtlModel();
+    stepLst.clear();
+    stepIdCounter = 1;
+    groupLst.clear();
+    groupIdCounter = 1;
+}
 
 void NrtlManager::createTransaction(TransactionType tp)
 {
