@@ -293,7 +293,7 @@ struct RTractM : public NrtlManager
 {
     static DataId create(IGroupId gid);
     static bool remove(DataId);
-    static std::vector<DataId> get()
+    static ResourceList get()
     {
         std::vector<DataId> id_vec;
         for(auto p_tr : model->tractLst)
@@ -321,7 +321,7 @@ struct RTractM : public NrtlManager
     {
     public:
         //! создание боковой поверхности
-        static void create();
+        static bool create(DataId tr_id);
         //! виимость боковой поверхности (по номеру тракта) */
         class Vis
         {
@@ -336,6 +336,15 @@ struct RTractM : public NrtlManager
             static bool set(DataId tr_id, uint8_t val);
             static uint8_t get(DataId tr_id);
         };
+
+        static QString errorString()
+        {
+            return _error_string;
+        }
+
+    private:
+
+        static QString _error_string;
 
     };
 

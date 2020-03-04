@@ -1,4 +1,7 @@
 #include "nrtlmanager.h"
+#include "MeshAlgorithm.h"
+
+QString RTractM::LtSurface::_error_string = "Error";
 DataId RTractM::create(IGroupId gid)
 {
     ITract* tr = new ITract();
@@ -95,3 +98,95 @@ bool RTractM::Visibility::get(DataId tr_id)
         return tract->vis;
     return false;
 }
+
+
+bool RTractM::LtSurface::create(DataId tr_id)
+{
+    ITract* tract = nullptr;
+    for(auto tr : model->tractLst)
+    {
+        if(tr->_tr_id == tr_id)
+        {
+            tract = tr;
+            break;
+        }
+    }
+
+    if(tract == nullptr)
+    {
+        _error_string = "There is no such tract";
+        return false;
+    }
+
+    if(tract->secLst.size() < 2)
+    {
+        _error_string = "Add more sections";
+        return false;
+    }
+
+    for(int i = 0; i < tract->secLst.size()-1; i++)
+    {
+        DataId sec_id = tract->secLst[i];
+        DataId sec_id_next = tract->secLst[i + 1];
+        if(RSectionModel::Border::get(sec_id).size()==0)
+        {
+            PolygonMatrix m = MeshTopology::makePolygonMatrix(model->meshData.getElement(sec_id));
+            RSectionModel::MatrixOfPolygons::set(sec_id, m);
+            MeshBorder b = MeshTopology::makeBorder(model->meshData.getElement(sec_id));
+            if(b.size()==0)
+            {
+                _error_string = MeshTopology::errorString();
+                return false;
+            }
+            else
+                RSectionModel::Border::set(sec_id ,b);
+        }
+        if(RSectionModel::Border::get(sec_id_next).size()==0)
+        {
+            PolygonMatrix m = MeshTopology::makePolygonMatrix(model->meshData.getElement(sec_id_next));
+            RSectionModel::MatrixOfPolygons::set(sec_id_next, m);
+            MeshBorder b=MeshTopology::makeBorder(model->meshData.getElement(sec_id_next));
+            if(b.size()==0)
+            {
+                _error_string = MeshTopology::errorString();
+                return false;
+            }
+            else
+                RSectionModel::Border::set(sec_id_next, b);
+        }
+        MeshModel* mesh=MeshTopology::makeSurface(MeshData::get().getElement(sec_id),
+                                                  MeshData::get().getElement(sec_id_next));
+
+        model->meshData.create(false) = mesh;
+        DataId surf_id = model->meshData.getId(mesh);
+
+        tract->latSurfLst.push_back(surf_id);
+
+    }
+
+    return true;
+}
+
+bool RTractM::LtSurface::Vis::set(DataId tr_id, bool vis)
+{
+    ITract* tract = nullptr;
+    for(auto tr : model->tractLst)
+    {
+        if(tr->_tr_id == tr_id)
+        {
+            tract = tr;
+            break;
+        }
+    }
+
+    if(tract != nullptr)
+    {
+        for(DataId surf_id : tract->latSurfLst)
+        {
+            RMeshModel::Visibility::set(surf_id, vis);
+        }
+    }
+
+    return (tract != nullptr);
+}
+
