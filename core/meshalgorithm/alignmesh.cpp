@@ -1,49 +1,51 @@
 #include "MeshAlgorithm.h"
 #include "cmath"
 
-QMatrix4x4 AlignMesh::getAlignMatrix(QVector<QVector3D> dst, QVector<QVector3D> src)
+QMatrix4x4 AlignMesh::getAlignMatrix(QVector<QVector3D> a, QVector<QVector3D> b)
 {
-    float x=dst[0].x(),y=dst[0].y(),z=dst[0].z();
-    float x1=src[0].x(),y1=src[0].y(),z1=src[0].z();
-    QVector3D tmp1,tmp2,axis;
-    float angle;
-    QQuaternion r1,r2;
+    QVector<QVector3D> vec_a,vec_b;
+    vec_a=a;
+    vec_b=b;
+    QVector3D tmp1,tmp2,axis,axis1;
     QMatrix4x4 matr,matr2;
-    for(int i=0;i<dst.size();i++)
+    float angle,angle1;
+    float x=a[0].x(),y=a[0].y(),z=a[0].z();
+    for(int i=0;i<a.size();i++)
     {
-        dst[i].setX(dst[i].x()-x);
-        src[i].setX(src[i].x()-x);
-        dst[i].setY(dst[i].y()-y);
-        src[i].setY(src[i].y()-y);
-        dst[i].setZ(dst[i].z()-z);
-        src[i].setZ(src[i].z()-z);
+        a[i].setX(a[i].x()-x);
+        b[i].setX(b[i].x()-x);
+        a[i].setY(a[i].y()-y);
+        b[i].setY(b[i].y()-y);
+        a[i].setZ(a[i].z()-z);
+        b[i].setZ(b[i].z()-z);
     }
-    QVector3D translater=dst[0]-src[0];
-    for(int i=0;i<dst.size();i++)
+    QVector3D translater=a[0]-b[0];
+    for(int i=0;i<a.size();i++)
     {
-        src[i]=src[i]+translater;
+        b[i]=b[i]+translater;
     }
-    tmp1=dst[1]-dst[0];
-    tmp2=src[1]-dst[0];
+    tmp1=a[1]-a[0];
+    tmp2=b[1]-a[0];
     angle=acos(QVector3D::dotProduct(tmp1,tmp2)/(tmp1.length()*tmp2.length()));
     axis=QVector3D(tmp1.y()*tmp2.z()-tmp1.z()*tmp2.y(),-tmp1.x()*tmp2.z()+tmp1.z()*tmp2.x(),tmp1.x()*tmp2.y()-tmp1.y()*tmp2.x());
-    r1=QQuaternion::fromAxisAndAngle(axis,-angle*180.0/3.14);
-    matr.setToIdentity();
-    matr.rotate(r1);
-    for(int i=0;i<dst.size();i++)
+
+    matr2.setToIdentity();
+    matr2.rotate(angle*180.0/3.14,-axis);
+    for(int i=0;i<b.size();i++)
     {
-        src[i]=matr*src[i];
+        b[i]=matr2*b[i];
     }
-    tmp1=dst[2]-dst[1];
-    tmp2=src[2]-dst[1];
-    angle=acos(QVector3D::dotProduct(tmp1,tmp2)/(tmp1.length()*tmp2.length()));
-    axis=QVector3D(tmp1.y()*tmp2.z()-tmp1.z()*tmp2.y(),-tmp1.x()*tmp2.z()+tmp1.z()*tmp2.x(),tmp1.x()*tmp2.y()-tmp1.y()*tmp2.x());
-    r2=QQuaternion::fromAxisAndAngle(axis,-angle*180.0/3.14);
+    tmp1=a[2]-a[0];
+    tmp2=b[2]-a[0];
+    angle1=acos(QVector3D::dotProduct(tmp1,tmp2)/(tmp1.length()*tmp2.length()));
+    axis1=QVector3D(tmp1.y()*tmp2.z()-tmp1.z()*tmp2.y(),-tmp1.x()*tmp2.z()+tmp1.z()*tmp2.x(),tmp1.x()*tmp2.y()-tmp1.y()*tmp2.x());
+
     matr.setToIdentity();
-    matr.translate(QVector3D(x,y,z));
-    matr.rotate(r2*r1);
-    matr.translate(QVector3D(-x,-y,-z));
-    matr.translate(QVector3D(translater.x(),translater.y(),translater.z()));
+    matr.translate(vec_a[0]);
+    matr.rotate(angle1*180.0/3.14,-axis1);
+    matr.rotate(angle*180.0/3.14,-axis);
+    matr.translate(-vec_a[0]);
+    matr.translate(vec_a[0]-vec_b[0]);
 
     return matr;
 }

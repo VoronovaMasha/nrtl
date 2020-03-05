@@ -24,11 +24,11 @@ bool RMeshModel::deleteMesh(DataId id)
     return model->meshData.removeById(id);
 }
 
-bool RMeshModel::align(DataId mesh_id, DataId dst_id, QVector<QVector3D> mesh_points, QVector<QVector3D> dst_points)
+bool RMeshModel::align(QVector<QVector3D> mesh_points, QVector<QVector3D> dst_points,DataId mesh_id, DataId dst_id)
 {
-    QMatrix4x4 align_mat = AlignMesh::getAlignMatrix(dst_points, mesh_points);
-    align_mat = RMeshModel::ModelMatrix::get(dst_id)*align_mat;
-    RMeshModel::ModelMatrix::set(mesh_id, align_mat);
+    QMatrix4x4 align_mat = AlignMesh::getAlignMatrix(mesh_points, dst_points);
+    align_mat = RMeshModel::ModelMatrix::get(mesh_id)*align_mat;
+    RMeshModel::ModelMatrix::set(dst_id, align_mat);
 
     return true;
 }

@@ -350,7 +350,7 @@ void MainWindow::on_AlignAction_clicked()
 
 void MainWindow::alligning(QVector<QVector3D> a, QVector<QVector3D> b, DataId mesh_id1, DataId mesh_id2)
 {
-    RMeshModel::align(mesh_id2,mesh_id1,b,a);
+    RMeshModel::align(a,b,mesh_id1,mesh_id2);
 }
 
 void MainWindow::SelectSection_clicked()

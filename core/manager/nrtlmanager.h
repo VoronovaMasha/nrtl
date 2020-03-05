@@ -77,7 +77,7 @@ struct RMeshModel : public NrtlManager
     static DataId create(MeshModel* obj);
     /*! \warning: after deleting memory should be deallocated, but not directly */
     static bool deleteMesh(DataId id);
-    static bool align(DataId mesh_id, DataId dst_id, QVector<QVector3D> mesh_points, QVector<QVector3D> dst_points);
+    static bool align(QVector<QVector3D> mesh_points, QVector<QVector3D> dst_points,DataId mesh_id, DataId dst_id);
 
     static MeshModel* getMeshData(DataId mesh_id)
     {
