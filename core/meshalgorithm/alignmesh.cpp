@@ -40,6 +40,7 @@ QMatrix4x4 AlignMesh::getAlignMatrix(QVector<QVector3D> a, QVector<QVector3D> b)
     angle1=acos(QVector3D::dotProduct(tmp1,tmp2)/(tmp1.length()*tmp2.length()));
     axis1=QVector3D(tmp1.y()*tmp2.z()-tmp1.z()*tmp2.y(),-tmp1.x()*tmp2.z()+tmp1.z()*tmp2.x(),tmp1.x()*tmp2.y()-tmp1.y()*tmp2.x());
 
+    QMatrix4x4 res_mat;
     matr.setToIdentity();
     matr.translate(vec_a[0]);
     matr.rotate(angle1*180.0/3.14,-axis1);
@@ -47,6 +48,25 @@ QMatrix4x4 AlignMesh::getAlignMatrix(QVector<QVector3D> a, QVector<QVector3D> b)
     matr.translate(-vec_a[0]);
     matr.translate(vec_a[0]-vec_b[0]);
 
-    return matr;
+    res_mat=matr;
+
+    float min=(vec_a[0]-matr*vec_b[0]).length()+(vec_a[1]-matr*vec_b[1]).length()+(vec_a[2]-matr*vec_b[2]).length();
+
+    for(int i=0;i<720;i++)
+    {
+        matr.setToIdentity();
+        matr.translate(vec_a[0]);
+        matr.rotate(0.5*i,a[1]-a[0]);
+        matr.rotate(angle*180.0/3.14,-axis);
+        matr.translate(-vec_a[0]);
+        matr.translate(vec_a[0]-vec_b[0]);
+        if(((vec_a[0]-matr*vec_b[0]).length()+(vec_a[1]-matr*vec_b[1]).length()+(vec_a[2]-matr*vec_b[2]).length())<min)
+        {
+            min=(vec_a[0]-matr*vec_b[0]).length()+(vec_a[1]-matr*vec_b[1]).length()+(vec_a[2]-matr*vec_b[2]).length();
+            res_mat=matr;
+        }
+    }
+
+    return res_mat;
 }
 
