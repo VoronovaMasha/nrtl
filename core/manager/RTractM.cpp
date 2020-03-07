@@ -124,6 +124,11 @@ bool RTractM::LtSurface::create(DataId tr_id)
         return false;
     }
 
+    for(DataId id : tract->latSurfLst)
+    {
+        RMeshModel::deleteMesh(id);
+    }
+
     for(int i = 0; i < tract->secLst.size()-1; i++)
     {
         DataId sec_id = tract->secLst[i];

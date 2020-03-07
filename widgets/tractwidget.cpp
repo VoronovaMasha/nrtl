@@ -101,15 +101,22 @@ void TractWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos
             menu->addAction(addDevice2);
         }
         QAction* addDevice3 = new QAction("Remove", this);
+
+        QAction* act_createLtSurf = new QAction("Create Lat. Surface", this);
         menu->addAction(addDevice1);
         menu->addAction(addDevice2);
         menu->addAction(addDevice3);
+        menu->addAction(act_createLtSurf);
         menu->popup(tree->viewport()->mapToGlobal(globalPos));
 
         connect(addDevice1, SIGNAL(triggered()), this, SLOT(rename()));
         connect(addDevice2, &QAction::triggered,
                 [tract, vis, this](){ RTractM::Visibility::set(tract->_tr_id, !vis ); update(); });
         connect(addDevice3, SIGNAL(triggered()), this, SLOT(remove()));
+        connect(act_createLtSurf, &QAction::triggered, [this]()
+        {
+            RTractM::LtSurface::create(dynamic_cast<TractItem*>(tree->currentItem())->_tr_id);
+        });
         return;
     }
 

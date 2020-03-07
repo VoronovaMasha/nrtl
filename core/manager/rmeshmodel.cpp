@@ -20,6 +20,7 @@ DataId RMeshModel::create(MeshModel* obj)
 
 bool RMeshModel::deleteMesh(DataId id)
 {
+    delete model->meshData.getElement(id);
     return model->meshData.removeById(id);
 }
 
