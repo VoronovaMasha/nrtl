@@ -226,7 +226,7 @@ bool ProjectOptions::Loader::loadProject(QString filename)
         stream>>name;
         stream>>meshCutId;
         stream>>secSize;
-        RSectionList meshSectionIds;
+        ResourceList meshSectionIds;
         for(unsigned int j=0;j<secSize;j++)
         {
             DataId secId;

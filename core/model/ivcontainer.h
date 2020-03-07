@@ -276,7 +276,7 @@ template<typename DocType>
 DocType IVContainer<DocType>::getElement(DataId id) const
 {
     uint64_t pos = find(dataIdMask, id);
-    return data[pos];
+    return (pos == data.size()) ? nullptr : data[pos];
 }
 
 

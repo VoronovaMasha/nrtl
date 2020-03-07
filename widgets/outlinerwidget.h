@@ -18,6 +18,14 @@ public:
     bool show;
 };
 
+class MainMeshItem : public QTreeWidgetItem
+{
+public:
+    DataId id;
+    MainMeshItem():QTreeWidgetItem(){}
+    bool show;
+};
+
 class StepItem : public QTreeWidgetItem
 {
 private:
@@ -81,11 +89,11 @@ private slots:
     void rename();
     void deleteMesh();
     void change(QString);
-    void make_step_current();
     void makeSectionVisible();
     void makeMainMeshVisible();
     void changeTransparency();
     void setTransparency(int value,DataId id);
+    void itemDoubleClickedSlot();
 private:
     QVBoxLayout *lout;
     QTreeWidget *tree;

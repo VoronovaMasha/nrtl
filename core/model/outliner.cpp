@@ -19,7 +19,6 @@ OutlinerData::~OutlinerData()
 void OutlinerData::addStep(DataId stp)
 {
     stepVec.push_back(stp);
-    workingStep = stepVec[stepVec.size() - 1];
 }
 
 

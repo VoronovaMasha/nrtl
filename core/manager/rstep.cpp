@@ -61,9 +61,11 @@ bool RStep::MeshCut::set(DataId step_id, DataId mesh_id)
     getStep(step_id)->meshCutId = mesh_id;
     return true;
 }
+
 DataId RStep::MeshCut::get(DataId step_id)
 {
-    return getStep(step_id)->meshCutId;
+    IStep* stp = getStep(step_id);
+    return (stp == nullptr) ? NONE : stp->meshCutId;
 }
 
 
@@ -72,9 +74,10 @@ bool RStep::SectionList::add(DataId step_id, DataId section_id)
     getStep(step_id)->meshSectionIds.push_back(section_id);
     getStep(step_id)->section_group_map[section_id] = NONE;
     model->meshData.getElement(section_id)->setStep(step_id);
+    sectionsToHide.push_back(section_id);
     return true;
 }
-bool RStep::SectionList::set(DataId step_id,RSectionList secLst)
+bool RStep::SectionList::set(DataId step_id, ResourceList secLst)
 {
     getStep(step_id)->meshSectionIds=secLst;
     return true;
@@ -95,7 +98,7 @@ bool RStep::SectionList::remove(DataId step_id, DataId section_id)
     model->meshData.getElement(section_id)->setStep(NONE);
     return true;
 }
-RSectionList& RStep::SectionList::get(DataId step_id)
+ResourceList& RStep::SectionList::get(DataId step_id)
 {
     return getStep(step_id)->meshSectionIds;
 }

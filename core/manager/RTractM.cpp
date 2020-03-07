@@ -10,9 +10,14 @@ DataId RTractM::create(IGroupId gid)
     for(auto stp : ROutlinerData::StepList::get())
     {
         IStep* pstep = getStep(stp);
-        if(pstep->group_section_map[gid] != NONE)
+        DataId sec = pstep->group_section_map[gid];
+        if(sec != NONE)
         {
-            tr->secLst.push_back(pstep->group_section_map[gid]);
+            tr->secLst.push_back(sec);
+            sectionsToHide.erase(std::find(sectionsToHide.begin(),
+                                           sectionsToHide.end(),
+                                           sec));
+
         }
     }
     model->tractLst.push_back(tr);

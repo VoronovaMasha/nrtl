@@ -56,6 +56,9 @@ protected:
     static DataId stepIdCounter;
     static std::vector<IGroupId> groupLst;
     static int groupIdCounter;
+
+
+    static ResourceList sectionsToHide;
 };
 
 class MeshData : public NrtlManager
@@ -195,7 +198,6 @@ struct RSectionModel : public NrtlManager
     };
 };
 
-typedef std::vector<DataId> RSectionList;
 class RStep : public NrtlManager
 {
 public:
@@ -223,8 +225,8 @@ public:
     public:
         static bool add(DataId step_id, DataId section_id);
         static bool remove(DataId step_id, DataId id);
-        static RSectionList& get(DataId step_id);
-        static bool set(DataId step_id,RSectionList secLst);
+        static ResourceList& get(DataId step_id);
+        static bool set(DataId step_id, ResourceList secLst);
     };
 };
 

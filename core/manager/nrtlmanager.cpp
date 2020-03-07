@@ -7,6 +7,8 @@ DataId NrtlManager::stepIdCounter = 1;
 std::vector<IGroupId> NrtlManager::groupLst = {};
 int NrtlManager::groupIdCounter = 1;
 
+ResourceList NrtlManager::sectionsToHide = {};
+
 
 TransactionSM::TransactionState TransactionSM::t_state = TransactionSM::TransactionState::WAIT;
 TransactionSM::TransactionType TransactionSM::t_type = TransactionSM::TransactionType::SYNC;
@@ -48,8 +50,9 @@ IStep* NrtlManager::getStep(DataId id)
         if((*it)->stepId == id)
             break;
     }
-
-    return (*it);
+    if(it == stepLst.end())
+        return nullptr;
+    else return (*it);
 }
 
 

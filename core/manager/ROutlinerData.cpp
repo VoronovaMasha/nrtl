@@ -25,7 +25,7 @@ bool ROutlinerData::StepList::changeId(DataId old_step_id,DataId new_step_id)
     {
         if(model->outliner.stepVec[i]==old_step_id)
         {
-            model->outliner.stepVec[i]==new_step_id;
+            model->outliner.stepVec[i] = new_step_id;
             break;
         }
     }
@@ -117,6 +117,19 @@ DataId ROutlinerData::MainMesh::get()
 bool ROutlinerData::WorkingStep::set(DataId step_id)
 {
     model->outliner.workingStep = step_id;
+    RStepList& stpLst = ROutlinerData::StepList::get();
+    for(DataId stp : stpLst)
+    {
+        DataId mh = RStep::MeshCut::get(stp);
+        RMeshModel::Visibility::set(mh, false);
+    }
+    for(DataId sec : sectionsToHide)
+    {
+        RSectionModel::Visibility::set(sec, false);
+    }
+
+    DataId mh = RStep::MeshCut::get(step_id);
+    RMeshModel::Visibility::set(mh, true);
     return true;
 }
 
