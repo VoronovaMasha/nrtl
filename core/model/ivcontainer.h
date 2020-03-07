@@ -34,7 +34,7 @@ public:
 	{
 		static_assert(std::is_pointer<DocType>::value, "Expected a pointer");
 		idCounter = 1; // 0 stand for NONE in outliner etc.
-		for (uint32_t i = 0; i < data.size(); i++)
+        for (uint64_t i = 0; i < data.size(); i++)
 		{
 			dataVisMask.push_back(false);
 			dataIdMask.push_back(idCounter++);
@@ -80,7 +80,7 @@ public:
 
 private:
 	template<typename T>
-	uint32_t find(std::vector<T> vec, const T& obj) const;
+    uint64_t find(std::vector<T> vec, const T& obj) const;
 	DataId idCounter;
 
 	std::vector<DocType> data;
@@ -91,7 +91,7 @@ private:
 	{
 		std::vector<DocType>* data;
 		std::vector<bool>* dataVis;
-		uint32_t index;
+        uint64_t index;
 		bool operator==(const IterObject& other) const
 		{
 			return (index == other.index && data == other.data);
@@ -100,7 +100,7 @@ private:
 		{
 			return (index != other.index || data != other.data);
 		}
-		IterObject(std::vector<DocType>* d, std::vector<bool>* dv, uint32_t id)
+        IterObject(std::vector<DocType>* d, std::vector<bool>* dv, uint64_t id)
 		{
 			data = d;
 			dataVis = dv;
@@ -112,7 +112,7 @@ private:
 	{
 		const std::vector<DocType>* data;
 		const std::vector<bool>* dataVis;
-		uint32_t index;
+        uint64_t index;
 		bool operator==(const const_IterObject& other) const
 		{
 			return (index == other.index && data == other.data);
@@ -121,7 +121,7 @@ private:
 		{
 			return (index != other.index || data != other.data);
 		}
-		const_IterObject(const std::vector<DocType>* d, const std::vector<bool>* dv, const uint32_t id)
+        const_IterObject(const std::vector<DocType>* d, const std::vector<bool>* dv, const uint64_t id)
 		{
 			data = d;
 			dataVis = dv;
@@ -162,9 +162,9 @@ private:
 
 template<typename DocType>
 template<typename T>
-uint32_t IVContainer<DocType>::find(std::vector<T> vec, const T& obj) const
+uint64_t IVContainer<DocType>::find(std::vector<T> vec, const T& obj) const
 {
-	for (uint32_t i = 0; i < vec.size(); i++)
+    for (uint64_t i = 0; i < vec.size(); i++)
 	{
 		if (obj == vec[i])
 			return i;
@@ -175,7 +175,7 @@ uint32_t IVContainer<DocType>::find(std::vector<T> vec, const T& obj) const
 template<typename DocType>
 void IVContainer<DocType>::setVisFlag(const DocType& obj, bool vis)
 {
-	uint32_t pos = find(data, obj);
+    uint64_t pos = find(data, obj);
 	if (pos != data.size())
 		dataVisMask[pos] = vis;
 }
@@ -183,7 +183,7 @@ void IVContainer<DocType>::setVisFlag(const DocType& obj, bool vis)
 template<typename DocType>
 bool IVContainer<DocType>::isVisible(const DocType& obj) const
 {
-	uint32_t pos = find(data, obj);
+    uint64_t pos = find(data, obj);
 	if (pos != data.size())
 		return dataVisMask[pos];
     return false;
@@ -192,7 +192,7 @@ bool IVContainer<DocType>::isVisible(const DocType& obj) const
 template<typename DocType>
 void IVContainer<DocType>::makeVisibleOnlyOne(DataId id)
 {
-    for (uint32_t i = 0; i < dataIdMask.size(); i++)
+    for (uint64_t i = 0; i < dataIdMask.size(); i++)
     {
         setVisFlag(data[i], dataIdMask[i]==id);
     }
@@ -201,7 +201,7 @@ void IVContainer<DocType>::makeVisibleOnlyOne(DataId id)
 template<typename DocType>
 void IVContainer<DocType>::makeAllUnvisible()
 {
-    for (uint32_t i = 0; i < dataIdMask.size(); i++)
+    for (uint64_t i = 0; i < dataIdMask.size(); i++)
     {
         setVisFlag(data[i],false);
     }
@@ -210,7 +210,7 @@ void IVContainer<DocType>::makeAllUnvisible()
 template<typename DocType>
 void IVContainer<DocType>::makeFirst(DataId id)
 {
-    uint32_t i=0;
+    uint64_t i=0;
     for (; i < dataIdMask.size(); i++)
     {
         if(dataIdMask[i]==id)
@@ -229,7 +229,7 @@ void IVContainer<DocType>::makeFirst(DataId id)
 template<typename DocType>
 void IVContainer<DocType>::makeLast(DataId id)
 {
-    uint32_t i=0;
+    uint64_t i=0;
     for (; i < dataIdMask.size(); i++)
     {
         if(dataIdMask[i]==id)
@@ -248,7 +248,7 @@ void IVContainer<DocType>::makeLast(DataId id)
 template<typename DocType>
 void IVContainer<DocType>::changeId(DataId old_id,DataId new_id)
 {
-    uint32_t i=0;
+    uint64_t i=0;
     for (; i < dataIdMask.size(); i++)
     {
         if(dataIdMask[i]==old_id)
@@ -268,14 +268,14 @@ void IVContainer<DocType>::changeIdCounter(DataId new_id)
 template<typename DocType>
 DataId IVContainer<DocType>::getId(const DocType& obj) const
 {
-	uint32_t pos = find(data, obj);
+    uint64_t pos = find(data, obj);
 	return dataIdMask[pos];
 }
 
 template<typename DocType>
 DocType IVContainer<DocType>::getElement(DataId id) const
 {
-    uint32_t pos = find(dataIdMask, id);
+    uint64_t pos = find(dataIdMask, id);
     return data[pos];
 }
 
@@ -309,7 +309,7 @@ DocType& IVContainer<DocType>::allocate(bool visible)
 template<typename DocType>
 bool IVContainer<DocType>::remove(const DocType& obj)
 {
-	const uint32_t pos = find(data, obj);
+    const uint64_t pos = find(data, obj);
 	if (pos == data.size())
 		return false;
 	data.erase(data.begin() + pos);
@@ -321,7 +321,7 @@ bool IVContainer<DocType>::remove(const DocType& obj)
 template<typename DocType>
 bool IVContainer<DocType>::removeById(DataId id)
 {
-    const uint32_t pos = find(dataIdMask, id);
+    const uint64_t pos = find(dataIdMask, id);
     if (pos == data.size())
         return false;
     data.erase(data.begin() + pos);
@@ -392,8 +392,8 @@ DocType& IVContainerIter<DocType>::operator*() const
 template<typename DocType>
 IVContainerIter<DocType>& IVContainerIter<DocType>::operator++()
 {
-	uint32_t pos = curObj.index;
-	for (uint32_t i = pos+1; i < (*curObj.data).size(); i++)
+    uint64_t pos = curObj.index;
+    for (uint64_t i = pos+1; i < (*curObj.data).size(); i++)
 		if ((*curObj.dataVis)[i])
 		{
 			curObj.index = i;
@@ -439,8 +439,8 @@ const DocType& const_IVContainerIter<DocType>::operator*() const
 template<typename DocType>
 const_IVContainerIter<DocType>& const_IVContainerIter<DocType>::operator++()
 {
-	uint32_t pos = curObj.index;
-	for (uint32_t i = pos + 1; i < (*curObj.data).size(); i++)
+    uint64_t pos = curObj.index;
+    for (uint64_t i = pos + 1; i < (*curObj.data).size(); i++)
 		if ((*curObj.dataVis)[i])
 		{
 			curObj.index = i;
