@@ -199,8 +199,9 @@ void OutlinerWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& global
             menu->addAction(makeCurrent);
             menu->popup(tree->viewport()->mapToGlobal(globalPos));
             connect(addDevice, SIGNAL(triggered()), this, SLOT(rename()));
-            connect(makeCurrent, &QAction::triggered, [q](){
+            connect(makeCurrent, &QAction::triggered, [q, this](){
                 ROutlinerData::WorkingStep::set(q->id);
+                this->update();
             });
             break;
         }
