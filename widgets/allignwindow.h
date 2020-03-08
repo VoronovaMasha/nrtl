@@ -2,6 +2,7 @@
 #define ALLIGNWINDOW_H
 
 #include <QMainWindow>
+#include <QComboBox>
 #include "meshmodel.h"
 #include "NrtlType.h"
 namespace Ui {

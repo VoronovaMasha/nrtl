@@ -21,6 +21,10 @@ DataId RMeshModel::create(MeshModel* obj)
 bool RMeshModel::deleteMesh(DataId id)
 {
     delete model->meshData.getElement(id);
+    auto er_sec =  std::find(sectionsToHide.begin(),
+                   sectionsToHide.end(),
+                   id);
+    if(er_sec != sectionsToHide.end()) sectionsToHide.erase(er_sec);
     return model->meshData.removeById(id);
 }
 
@@ -46,6 +50,14 @@ QString RMeshModel::Name::get(DataId mesh_id)
 
 bool RMeshModel::Transperancy::set(DataId mesh_id, uint8_t val)
 {
+    if(val==100)
+    {
+        model->meshData.makeLast(mesh_id);
+    }
+    else
+    {
+        model->meshData.makeFirst(mesh_id);
+    }
     model->meshData.getElement(mesh_id)->setTransperancy(val);
     return true;
 }

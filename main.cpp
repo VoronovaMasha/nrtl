@@ -24,9 +24,9 @@ int main(int argc, char *argv[])
     format.setDepthBufferSize(32);
     format.setSamples(16);
     QSurfaceFormat::setDefaultFormat(format);
-    MainWindow w;
     NrtlModel* md = new NrtlModel();
     NrtlManager::initModel(md);
+    MainWindow w;
     w.setModel(md);
     w.showMaximized();
 //    a.setStyleSheet(loadTxtFile(":/qss/styles/dark.qss"));

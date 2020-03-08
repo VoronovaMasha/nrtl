@@ -312,6 +312,8 @@ void MainWindow::loadMeshSlot()
         else
             outlinerWgt->addCut(md,info.fileName());
         NrtlManager::commitTransaction();
+
+        outlinerWgt->update();
     }
     else
     {
