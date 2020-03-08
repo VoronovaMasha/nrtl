@@ -19,9 +19,14 @@ AllignWindow::~AllignWindow()
 
 void AllignWindow::on_pushButton_clicked()
 {
-    if(ui->openGLWidget->cutVertexes.size()!=3 || ui->openGLWidget_2->cutVertexes.size()!=3)
+    if(ui->openGLWidget->cutVertexes.size()<3)
     {
-        QMessageBox::warning(this,"Warning","You must choose 3 vertexes in each model.");
+        QMessageBox::warning(this,"Warning","You must choose at least 3 vertexes in each model.");
+        return;
+    }
+    if(ui->openGLWidget_2->cutVertexes.size()!=ui->openGLWidget->cutVertexes.size())
+    {
+        QMessageBox::warning(this,"Warning","You must choose the same number of vertexes in each model.");
         return;
     }
     emit ok(ui->openGLWidget->cutVertexes,ui->openGLWidget_2->cutVertexes,c,d);

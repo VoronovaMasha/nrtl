@@ -96,7 +96,7 @@ bool ProjectOptions::Loader::loadProject(QString filename)
         return false;
     NrtlManager::restart();
     QDataStream stream(&file);
-    unsigned int size;
+    uint64_t size;
     stream>>size;
     for(unsigned int i=0;i<size;i++)
     {
@@ -221,7 +221,7 @@ bool ProjectOptions::Loader::loadProject(QString filename)
         DataId id;
         QString name;
         DataId meshCutId;
-        unsigned int secSize;
+        uint64_t secSize;
         stream>>id;
         stream>>name;
         stream>>meshCutId;
@@ -234,7 +234,7 @@ bool ProjectOptions::Loader::loadProject(QString filename)
             meshSectionIds.push_back(secId);
         }
         std::unordered_map<DataId, IGroupId, DataHash> map1;
-        unsigned int mapSize;
+        uint64_t mapSize;
         stream>>mapSize;
         for(unsigned int j=0;j<mapSize;j++)
         {
@@ -293,7 +293,7 @@ bool ProjectOptions::Loader::loadProject(QString filename)
         stream>>group._color;
         stream>>group._name;
         tr->groupId=group;
-        unsigned int length;
+        uint64_t length;
         stream>>length;
         for(unsigned int j=0;j<length;j++)
         {

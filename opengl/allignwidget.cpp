@@ -94,16 +94,11 @@ void AllignWidget::paintGL()
 
 void AllignWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if(cutVertexes.size()<3)
+    if(event->buttons()==Qt::LeftButton)
     {
-        if(event->buttons()==Qt::LeftButton)
-        {
-            mouseclick.push_back(QVector2D(event->localPos()));
-            isCutting=true;
-            z+=0.000001f;
-            update();
-        }
+        mouseclick.push_back(QVector2D(event->localPos()));
+        isCutting=true;
+        z+=0.000001f;
+        update();
     }
-    else
-        QMessageBox::warning(this,"Warning","You have already chosen 3 vertexes in this model.");
 }
