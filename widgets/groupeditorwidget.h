@@ -5,22 +5,8 @@
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
-
+#include "widgettype.h"
 #include "nrtlmanager.h"
-
-class GroupItem : public QListWidgetItem
-{
-public:
-    GroupItem(const QIcon &icon,
-                       const QString &text,
-                       QListWidget *parent = nullptr,
-                       int type = Type) :
-        QListWidgetItem(icon, text, parent, type)
-    {
-
-    }
-    IGroupId _group;
-};
 
 class GroupEditorWidget : public QWidget
 {

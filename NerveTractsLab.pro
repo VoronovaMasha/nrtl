@@ -78,7 +78,8 @@ HEADERS += \
     widgets/outlinerwidget.h \
     widgets/renamestepdialog.h \
     widgets/resourcemanager.h \
-    widgets/transparencydialog.h
+    widgets/transparencydialog.h \
+    widgets/widgettype.h
 
 FORMS += \
     $$WGTPATH/setcolor.ui \

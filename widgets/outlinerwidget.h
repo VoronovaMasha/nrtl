@@ -7,33 +7,9 @@
 #include <QVBoxLayout>
 #include <QVector>
 #include <QPainter>
-#include<QHeaderView>
-#include"nrtlmanager.h"
-
-
-class NrtlItem : public QTreeWidgetItem
-{
-public:
-    DataId id;
-    bool show;
-};
-
-class MainMeshItem : public NrtlItem
-{};
-
-class CutItem : public NrtlItem
-{};
-
-class SectionItem : public NrtlItem
-{};
-
-class StepItem : public NrtlItem
-{};
-
-class NrtlLabel : public QTreeWidgetItem
-{};
-
-
+#include <QHeaderView>
+#include "widgettype.h"
+#include "nrtlmanager.h"
 
 class OutlinerWidget : public QWidget
 {

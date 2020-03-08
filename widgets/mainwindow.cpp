@@ -323,31 +323,40 @@ void MainWindow::loadMeshSlot()
 
 void MainWindow::on_AlignAction_clicked()
 {
-    DataId id=ROutlinerData::MainMesh::get();
+/*    DataId id=ROutlinerData::MainMesh::get();
     if(id==NONE)
     {
         QMessageBox::warning(this, "Warning", "Before alligning load main mesh.");
         return;
-    }
-    id=ROutlinerData::WorkingStep::get();
+    }*/
+    AllignWindow *dialog = nullptr;
+    DataId id = ROutlinerData::WorkingStep::get();
     if(id==NONE)
     {
         QMessageBox::warning(this, "Warning", "Before alligning choose current step.");
         return;
     }
-    id=RStep::MeshCut::get(ROutlinerData::WorkingStep::get());
+    id = RStep::MeshCut::get(id);
     if(id==NONE)
     {
         QMessageBox::warning(this, "Warning", "Before alligning load cut to current step.");
         return;
     }
-    AllignWindow *dialog=new AllignWindow(RMeshModel::getMeshData(ROutlinerData::MainMesh::get()),
-                                          RMeshModel::getMeshData(RStep::MeshCut::get(ROutlinerData::WorkingStep::get())),
-                                          ROutlinerData::MainMesh::get(),
-                                          RStep::MeshCut::get(ROutlinerData::WorkingStep::get()));
-    connect (dialog, SIGNAL (ok(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)),
-             this, SLOT(alligning(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)));
-    dialog->showMaximized();
+    DataId id_dst = ResourceManager::getMesh(this);
+    if(id == id_dst)
+    {
+        QMessageBox::warning(this, "Warning", "You should choose different meshes");
+        return;
+    }
+    if(id_dst != NONE)
+    {
+        dialog = new AllignWindow(RMeshModel::getMeshData(id_dst),
+                                  RMeshModel::getMeshData(id),
+                                  id_dst, id);
+        connect (dialog, SIGNAL (ok(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)),
+                 this, SLOT(alligning(QVector<QVector3D>,QVector<QVector3D>, DataId, DataId)));
+        dialog->showMaximized();
+    }
 }
 
 void MainWindow::alligning(QVector<QVector3D> a, QVector<QVector3D> b, DataId mesh_id1, DataId mesh_id2)
