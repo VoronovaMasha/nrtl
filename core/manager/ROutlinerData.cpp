@@ -25,11 +25,7 @@ bool ROutlinerData::StepList::changeId(DataId old_step_id,DataId new_step_id)
     {
         if(model->outliner.stepVec[i]==old_step_id)
         {
-<<<<<<< HEAD
             model->outliner.stepVec[i] = new_step_id;
-=======
-            model->outliner.stepVec[i]=new_step_id;
->>>>>>> complex alligning done
             break;
         }
     }
