@@ -98,9 +98,13 @@ private slots:
     void loadMeshSlot();
     void SelectSection_clicked();
     void SaveSection_clicked();
+    void StartErasing_clicked();
+    void StopErasing_clicked();
     void SaveDocAs_clicked();
     void LoadDoc_clicked();
     void updateProgressBar(int val);
+
+
 signals:
     void update();
     void startMeshLoading();
@@ -122,6 +126,8 @@ private:
     QAction* act_Align;
     QAction* act_SelectSection;
     QAction* act_SaveSection;
+    QAction* act_StartErasing;
+    QAction* act_StopErasing;
     QAction* act_DrawPl;
     QAction* act_ConnectBorders;
     QAction* act_Outliner;
@@ -134,6 +140,7 @@ private:
     QAction* act_Undo;
     QAction* act_Redo;
     QAction* act_ResMan;
+
 
     OutlinerWidget* outlinerWgt;
     TractWidget* tractWgt;

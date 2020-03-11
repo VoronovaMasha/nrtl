@@ -38,6 +38,7 @@ SOURCES += \
     core/manager/rstep.cpp \
     core/meshalgorithm/alignmesh.cpp \
     core/meshalgorithm/meshcutter.cpp \
+    core/meshalgorithm/mesheraser.cpp \
     core/meshalgorithm/meshmodelloader.cpp \
     core/meshalgorithm/meshtopology.cpp \
     core/model/meshmodel.cpp \

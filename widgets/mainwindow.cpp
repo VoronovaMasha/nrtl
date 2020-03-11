@@ -42,6 +42,9 @@ MainWindow::MainWindow(QWidget *parent)
     act_Align = new QAction("Align");
     act_SelectSection = new QAction("Select Section");
     act_SaveSection = new QAction("Save Section");
+    act_StartErasing = new QAction("Start Erasing");
+    act_StopErasing = new QAction("Stop Erasing");
+    act_SaveSection = new QAction("Save Section");
     act_DrawPl = new QAction("Draw Polyline");
     act_ConnectBorders = new QAction("Connect Borders");
     act_Outliner = new QAction("Outiner");
@@ -78,9 +81,10 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("Nerve Tracts Lab");
 
     act_Align->setIcon(QIcon(":/img/icons/icon_align.png"));
-//    act_SelectSection->setIcon(QIcon(":/img/icons/icon_cut_cube.png"));
     act_SelectSection->setIcon(QIcon(":/img/icons/icon_start_cutting.png"));
     act_SaveSection->setIcon(QIcon(":/img/icons/icon_save_section.png"));
+    act_StartErasing->setIcon(QIcon(":/img/icons/icon_start_erasing.png"));
+    act_StopErasing->setIcon(QIcon(":/img/icons/icon_stop_erasing.png"));
     act_DrawPl->setIcon(QIcon(":/img/icons/icon_create_polyline.png"));
     act_ConnectBorders->setIcon(QIcon(":/img/icons/icon_connect_borders.png"));
 
@@ -139,6 +143,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(act_ResMan, &QAction::triggered, res_man_wnd, &ResourceManager::show);
     connect(act_SelectSection,SIGNAL(triggered()),this,SLOT(SelectSection_clicked()));
     connect(act_SaveSection,SIGNAL(triggered()),this,SLOT(SaveSection_clicked()));
+    connect(act_StartErasing,SIGNAL(triggered()),this,SLOT(StartErasing_clicked()));
+    connect(act_StopErasing,SIGNAL(triggered()),this,SLOT(StopErasing_clicked()));
     connect(act_SaveDocAs,SIGNAL(triggered()),this,SLOT(SaveDocAs_clicked()));
     connect(act_LoadDoc,SIGNAL(triggered()),this,SLOT(LoadDoc_clicked()));
 
@@ -162,6 +168,8 @@ MainWindow::MainWindow(QWidget *parent)
     menu_Tools->addAction(act_Align);
     menu_Tools->addAction(act_SelectSection);
     menu_Tools->addAction(act_SaveSection);
+    menu_Tools->addAction(act_StartErasing);
+    menu_Tools->addAction(act_StopErasing);
     menu_Tools->addAction(act_DrawPl);
     menu_Tools->addSeparator();
     menu_Tools->addAction(act_ConnectBorders);
@@ -191,6 +199,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->toolBar->addAction(act_Align);
     ui->toolBar->addAction(act_SelectSection);
     ui->toolBar->addAction(act_SaveSection);
+    ui->toolBar->addAction(act_StartErasing);
+    ui->toolBar->addAction(act_StopErasing);
     ui->toolBar->addAction(act_DrawPl);
 
     ui->toolBar->addSeparator();
@@ -418,6 +428,38 @@ void MainWindow::SaveSection_clicked()
         }
     }
 }
+
+
+void MainWindow::StartErasing_clicked()
+{
+    //!!!!!должно быть видно тоько 1 сечение и его прозрачность равна 100
+    glWgt->cutVertexes.clear();
+    glWgt->tr_cutVertexes.clear();
+    glWgt->cutFlag=1;
+    glWgt->isCleaning=true;
+}
+void MainWindow::StopErasing_clicked()
+{
+    if(glWgt->cutFlag!=0)
+    {
+        DataId section_id=2;//!!!!здесь id того сечения из которого стираем
+        glWgt->cutFlag=0;
+        glWgt->isCleaning=false;
+        MeshEraser::ViewMatrix::set(glWgt->getViewMatrix());
+        MeshEraser::CutVertexes::set(glWgt->cutVertexes,glWgt->tr_cutVertexes);
+        if(!MeshEraser::eraseFromSection(section_id))
+        {
+            QMessageBox::warning(this, "Warning", MeshEraser::errorString());
+        }
+        else
+        {
+            glWgt->update();
+        }
+        glWgt->cutVertexes.clear();
+        glWgt->tr_cutVertexes.clear();
+    }
+}
+
 
 void MainWindow::SaveDocAs_clicked()
 {

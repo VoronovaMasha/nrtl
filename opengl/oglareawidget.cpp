@@ -13,6 +13,7 @@ OGLAreaWidget::OGLAreaWidget(QWidget *parent)
     x=0.0f;
     y=0.0f;
     isCutting=false;
+    isCleaning=false;
 }
 
 OGLAreaWidget::~OGLAreaWidget()
@@ -78,8 +79,23 @@ void OGLAreaWidget::paintGL()
             if(error)
                 break;
             glReadPixels(mouseclick[i].x(),height()-mouseclick[i].y(),1,1,GL_DEPTH_COMPONENT,GL_FLOAT,&depth);
-            if(depth>=1)
-                return;
+            if(depth>=1 || depth<0)
+            {
+                if(!isCleaning||cutVertexes.size()==0)
+                {
+                    if(mouseclick.size()!=1)
+                    {
+                        if(cutVertexes.size()>tr_cutVertexes.size())
+                            cutVertexes.remove(cutVertexes.size()-1);
+                        if(cutVertexes.size()<tr_cutVertexes.size())
+                            tr_cutVertexes.remove(0);
+                    }
+                    break;
+                }
+                else
+                    depth=prev_depth;
+            }
+            prev_depth=depth;
             float zNorm=2*depth-1;
             float zView=2*0.01*50/((50-0.01)*zNorm-0.01-50);
             depth=zView-z;
@@ -153,17 +169,20 @@ void OGLAreaWidget::mousePressEvent(QMouseEvent *event)
     }
     else
     {
-        if(event->buttons()==Qt::LeftButton)
+        if(!isCleaning)
         {
-            mouseclick.push_back(QVector2D(event->localPos()));
-            isCutting=true;
-            z+=0.000001f;
-            update();
-        }
-        if(event->buttons()==Qt::RightButton)
-        {
-            mousePosition=QVector2D(event->localPos());
-            event->accept();
+            if(event->buttons()==Qt::LeftButton)
+            {
+                mouseclick.push_back(QVector2D(event->localPos()));
+                isCutting=true;
+                z+=0.000001f;
+                update();
+            }
+            if(event->buttons()==Qt::RightButton)
+            {
+                mousePosition=QVector2D(event->localPos());
+                event->accept();
+            }
         }
     }
 }
@@ -206,33 +225,67 @@ void OGLAreaWidget::mouseMoveEvent(QMouseEvent *event)
     }
     else
     {
-        if(event->buttons()!=Qt::RightButton)
-            return;
-        QVector2D diff=QVector2D(event->localPos())-mousePosition;
-        if(diff.length()>10)
+        if(!isCleaning)
         {
-            QVector2D p;
-            if(diff.x()==0.0f && diff.y()<0)
-                p=QVector2D(-1.0,0.0);
-            if(diff.x()==0.0f && diff.y()>0)
-                p=QVector2D(1.0,0.0);
-            if(diff.y()==0.0f && diff.x()<0)
-                p=QVector2D(0.0,-1.0);
-            if(diff.y()==0.0f && diff.x()>0)
-                p=QVector2D(0.0,1.0);
-            else
+            if(event->buttons()!=Qt::RightButton)
+                return;
+            QVector2D diff=QVector2D(event->localPos())-mousePosition;
+            if(diff.length()>10)
             {
-                p=QVector2D(1.0,-diff.x()/diff.y());
-                p/=p.length();
-                if(diff.x()*p.y()-diff.y()*p.x()<0)
-                    p=p*(-1);
+                QVector2D p;
+                if(diff.x()==0.0f && diff.y()<0)
+                    p=QVector2D(-1.0,0.0);
+                else if(diff.x()==0.0f && diff.y()>0)
+                    p=QVector2D(1.0,0.0);
+                else if(diff.y()==0.0f && diff.x()<0)
+                    p=QVector2D(0.0,-1.0);
+                else if(diff.y()==0.0f && diff.x()>0)
+                    p=QVector2D(0.0,1.0);
+                else
+                {
+                    p=QVector2D(1.0,-diff.x()/diff.y());
+                    p/=p.length();
+                    if(diff.x()*p.y()-diff.y()*p.x()<0)
+                        p=p*(-1);
+                }
+                mousePosition=QVector2D(event->localPos());
+                mouseclick.push_back(QVector2D(QVector2D(int(event->localPos().x()+5.0f*p.x()),int(event->localPos().y()+5.0f*p.y()))));
+                mouseclick.push_back(QVector2D(QVector2D(int(event->localPos().x()-5.0f*p.x()),int(event->localPos().y()-5.0f*p.y()))));
+                isCutting=true;
+                z+=0.000001f;
+                update();
             }
-            mousePosition=QVector2D(event->localPos());
-            mouseclick.push_back(QVector2D(QVector2D(int(event->localPos().x()+5.0f*p.x()),int(event->localPos().y()+5.0f*p.y()))));
-            mouseclick.push_back(QVector2D(QVector2D(int(event->localPos().x()-5.0f*p.x()),int(event->localPos().y()-5.0f*p.y()))));
-            isCutting=true;
-            z+=0.000001f;
-            update();
+        }
+        else
+        {
+            if(event->buttons()!=Qt::LeftButton)
+                return;
+            QVector2D diff=QVector2D(event->localPos())-mousePosition;
+            if(diff.length()>10)
+            {
+                QVector2D p;
+                if(diff.x()==0.0f && diff.y()<0)
+                    p=QVector2D(-1.0,0.0);
+                else if(diff.x()==0.0f && diff.y()>0)
+                    p=QVector2D(1.0,0.0);
+                else if(diff.y()==0.0f && diff.x()<0)
+                    p=QVector2D(0.0,-1.0);
+                else if(diff.y()==0.0f && diff.x()>0)
+                    p=QVector2D(0.0,1.0);
+                else
+                {
+                    p=QVector2D(1.0,-diff.x()/diff.y());
+                    p/=p.length();
+                    if(diff.x()*p.y()-diff.y()*p.x()<0)
+                        p=p*(-1);
+                }
+                mousePosition=QVector2D(event->localPos());
+                mouseclick.push_back(QVector2D(QVector2D(int(event->localPos().x()+5.0f*p.x()),int(event->localPos().y()+5.0f*p.y()))));
+                mouseclick.push_back(QVector2D(QVector2D(int(event->localPos().x()-5.0f*p.x()),int(event->localPos().y()-5.0f*p.y()))));
+                isCutting=true;
+                z+=0.000001f;
+                update();
+            }
         }
     }
 }

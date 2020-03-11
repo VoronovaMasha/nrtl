@@ -36,6 +36,7 @@ public:
     ~OGLAreaWidget();
     int cutFlag=0;
     bool isCutting;
+    bool isCleaning;
     QVector<QVector3D> cutVertexes;
     QVector<QVector3D> tr_cutVertexes;
 public slots:
@@ -65,6 +66,8 @@ protected:
     float z;
     float x;
     float y;
+
+    float prev_depth;
 
     QOpenGLFramebufferObject *mFBO=0;
 

@@ -37,6 +37,8 @@
         <file>icons/icon_start_cutting.png</file>
         <file>textures/cube2.png</file>
         <file>textures/cube3.png</file>
+        <file>icons/icon_start_erasing.png</file>
+        <file>icons/icon_stop_erasing.png</file>
     </qresource>
     <qresource prefix="/ogl">
         <file>shaders/fshader.fsh</file>
