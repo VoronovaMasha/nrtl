@@ -13,7 +13,10 @@ TractWidget::TractWidget(QWidget* parent) :
     lout = new QVBoxLayout();
     tree = new QTreeWidget();
 
-    tree->header()->hide();
+    tree->setColumnCount(4);
+    tree->setHeaderLabels({"", "", "Group", "Color"});
+    tree->header()->setStretchLastSection(false);
+    tree->header()->setSectionResizeMode(QHeaderView::ResizeToContents);
     tree->clear();
 
     addTrBtn = new QPushButton("Add tract");
@@ -38,12 +41,27 @@ TractWidget::TractWidget(QWidget* parent) :
 
 void TractWidget::update()
 {
+    int col = 1;
     tree->clear();
-    tree->setColumnCount(3);
-    for(auto tract : RTractM::get())
+    for(DataId tract : RTractM::get())
     {
         TractItem* tr_itm = new TractItem(RTractM::GroupId::get(tract), tract);
+        tr_itm->setText(col, RTractM::Name::get(tract));
+        NrtlLabel* nlbl = new NrtlLabel;
+        nlbl->setText(col, "Sections");
+        SectionItem* sec_itm = nullptr;
+
+        for(DataId sec_id : RTractM::SectionList::get(tract))
+        {
+            sec_itm = new SectionItem();
+            sec_itm->id = sec_id;
+            sec_itm->setText(col, "    " + RSectionModel::Name::get(sec_id));
+            nlbl->addChild(sec_itm);
+        }
+
+        tr_itm->addChild(nlbl);
         tree->addTopLevelItem(tr_itm);
+
     }
     emit update_tract_tree();
 }
@@ -54,18 +72,12 @@ void TractWidget::add_tract()
     //только в констурктор нужно еще будет добавить QIcon icon
 
     IGroupId gid = GroupViewer::getGroup();
-    TractItem *st;
     if(gid._id != NONE)
     {
         DataId tr_id = RTractM::create(gid);
-
-        st = new TractItem(gid, tr_id);
-        v_tracts.push_back(st);
         RTractM::Visibility::set(tr_id, true);
-        tree->addTopLevelItem(st);
     }
-
-
+    update();
 }
 
 void TractWidget::slotCustomMenuRequested(QPoint pos)
@@ -89,7 +101,7 @@ void TractWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos
     {
         QAction* addDevice1 = new QAction("Rename", this);
         QAction* addDevice2 = new QAction(this);
-        bool vis = RTractM::Visibility::get(tract->_tr_id);
+        bool vis = RTractM::Visibility::get(tract->id);
         if(vis)
         {
             addDevice2 = new QAction("Hide", this);
@@ -111,11 +123,13 @@ void TractWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos
 
         connect(addDevice1, SIGNAL(triggered()), this, SLOT(rename()));
         connect(addDevice2, &QAction::triggered,
-                [tract, vis, this](){ RTractM::Visibility::set(tract->_tr_id, !vis ); update(); });
+                [tract, vis, this](){ RTractM::Visibility::set(tract->id, !vis ); update(); });
         connect(addDevice3, SIGNAL(triggered()), this, SLOT(remove()));
         connect(act_createLtSurf, &QAction::triggered, [this]()
         {
-            RTractM::LtSurface::create(dynamic_cast<TractItem*>(tree->currentItem())->_tr_id);
+            DataId tr_id = dynamic_cast<TractItem*>(tree->currentItem())->id;
+            RTractM::LtSurface::create(tr_id);
+            RTractM::Visibility::set(tr_id, true);
         });
         return;
     }
@@ -146,7 +160,7 @@ void TractWidget::showContextMenu(QTreeWidgetItem* item, const QPoint& globalPos
         QAction * addDevice1 = new QAction("Transperancy", this);
         QAction * addDevice2;
         menu->addAction(addDevice1);
-        if(RTractM::Visibility::get(surface->id_bok))
+        if(RTractM::Visibility::get(surface->id))
         {
             addDevice2 = new QAction("Hide", this);
             menu->addAction(addDevice2);
@@ -179,14 +193,14 @@ void TractWidget::remove()
             dynamic_cast<TractItem*>(list->currentItem());
     if(itm != nullptr)
     {
-        RTractM::remove(itm->_tr_id);
+        RTractM::remove(itm->id);
     }
     update();
 }
 
 
 void TractWidget :: change(QString s){
-    QTreeWidgetItem *item = tree->currentItem();
+/*    QTreeWidgetItem *item = tree->currentItem();
     for(auto i =0; i < v_tracts.size(); ++i)
     {
         TractItem *tract = v_tracts[i];
@@ -195,7 +209,7 @@ void TractWidget :: change(QString s){
             item->setText(0,s);
             break;
         }
-    }
+    }*/
     update();
 }
 

@@ -42,6 +42,16 @@ public:
         return icon;
     }
 
+    DataId getCurrentSectionId()
+    {
+        SectionItem* sec_itm = dynamic_cast<SectionItem*>(tree->currentItem());
+        if(sec_itm != nullptr)
+        {
+            return sec_itm->id;
+        }
+
+        return NONE;
+    }
 private slots:
     void add_step();
     void slotCustomMenuRequested(QPoint);

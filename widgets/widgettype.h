@@ -26,6 +26,22 @@ class StepItem : public NrtlItem
 class NrtlLabel : public QTreeWidgetItem
 {};
 
+class LtSurfItem : public NrtlItem
+{};
+
+class TractItem : public NrtlItem{
+private:
+    IGroupId _gid;
+public:
+
+     TractItem(IGroupId gid, DataId tr_id)
+     {
+         id = tr_id;
+         _gid = gid;
+     }
+};
+
+
 class GroupItem : public QListWidgetItem
 {
 public:

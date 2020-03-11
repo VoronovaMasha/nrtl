@@ -215,6 +215,7 @@ MainWindow::MainWindow(QWidget *parent)
     this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock_Outliner);
     this->addDockWidget(Qt::DockWidgetArea::RightDockWidgetArea, dock_TractEditor);
 
+    _erase_section_id = NONE;
 }
 
 MainWindow::~MainWindow()
@@ -433,21 +434,32 @@ void MainWindow::SaveSection_clicked()
 void MainWindow::StartErasing_clicked()
 {
     //!!!!!должно быть видно тоько 1 сечение и его прозрачность равна 100
-    glWgt->cutVertexes.clear();
-    glWgt->tr_cutVertexes.clear();
-    glWgt->cutFlag=1;
-    glWgt->isCleaning=true;
+    _erase_section_id = outlinerWgt->getCurrentSectionId();
+    if(_erase_section_id == NONE)
+    {
+        QMessageBox::warning(this, "Warning", "Select Section in outliner first");
+    }
+    else
+    {
+        RMeshModel::Visibility::makeVisibleOnlyOne(_erase_section_id);
+
+        glWgt->cutVertexes.clear();
+        glWgt->tr_cutVertexes.clear();
+        glWgt->cutFlag=1;
+        glWgt->isCleaning=true;
+    }
+
 }
 void MainWindow::StopErasing_clicked()
 {
     if(glWgt->cutFlag!=0)
     {
-        DataId section_id=2;//!!!!здесь id того сечения из которого стираем
         glWgt->cutFlag=0;
         glWgt->isCleaning=false;
+
         MeshEraser::ViewMatrix::set(glWgt->getViewMatrix());
         MeshEraser::CutVertexes::set(glWgt->cutVertexes,glWgt->tr_cutVertexes);
-        if(!MeshEraser::eraseFromSection(section_id))
+        if(!MeshEraser::eraseFromSection(_erase_section_id))
         {
             QMessageBox::warning(this, "Warning", MeshEraser::errorString());
         }
@@ -455,8 +467,10 @@ void MainWindow::StopErasing_clicked()
         {
             glWgt->update();
         }
+
         glWgt->cutVertexes.clear();
         glWgt->tr_cutVertexes.clear();
+
     }
 }
 

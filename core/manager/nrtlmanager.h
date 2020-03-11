@@ -311,6 +311,23 @@ struct RTractM : public NrtlManager
         return id_vec;
     }
 
+    class SectionList
+    {
+    public:
+        static const ResourceList& get(DataId tr_id)
+        {
+            for(size_t i = 0; i<model->tractLst.size(); ++i)
+            {
+                if(model->tractLst[i]->_tr_id == tr_id)
+                {
+                    return model->tractLst[i]->secLst;
+                }
+            }
+
+            return {};
+        }
+
+    };
     class Name
     {
     public:

@@ -46,54 +46,12 @@ public:
 };
 
 
-class LtSurfItem : public QTreeWidgetItem{
-public:
-    DataId id_bok;
-    bool show = true;
-    LtSurfItem():QTreeWidgetItem(){}
-};
-
-
-class TractItem : public QTreeWidgetItem{
-private:
-public:
-     DataId _tr_id;
-     int how_many_section = 1;
-     LtSurfItem *bok;
-     SectionItem *sections;
-     //QTreeWidgetItem *contours;
-     //Section *sect_1;
-     //QTreeWidgetItem *parent;
-     QVector<SectionItem*> v_section_in_tract;
-     QVector<LtSurfItem*> v_bok_in_tract;
-     TractItem(IGroupId gid, DataId tr_id):
-         _tr_id(tr_id)
-     {
-        //parent = new QTreeWidgetItem();
-        bok = new LtSurfItem();
-        sections = new SectionItem();
-        //contours = new QTreeWidgetItem();
-        //sect_1 = new Section();
-
-        bok->setText(0,"Side surface");
-        sections->setText(0,"Section");
-        //sect_1->setText(0,"No sections");
-        v_section_in_tract.push_back(sections);
-        v_bok_in_tract.push_back(bok);
-        //sections->addChild(sect_1);
-        //contours->setText(0,"Contours");
-        this->setText(0, gid._name);
-//        this->addChild(sections);
-//        this->addChild(bok);
-        //parent->addChild(contours);
-     }
-};
-
 class TractWidget : public QWidget
 {
     Q_OBJECT
 public:
     TractWidget(QWidget* parent=nullptr);
+
 signals:
     void update_tract_tree();
 public slots:

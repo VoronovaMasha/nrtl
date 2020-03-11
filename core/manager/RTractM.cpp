@@ -14,9 +14,9 @@ DataId RTractM::create(IGroupId gid)
         if(sec != NONE)
         {
             tr->secLst.push_back(sec);
-            sectionsToHide.erase(std::find(sectionsToHide.begin(),
-                                           sectionsToHide.end(),
-                                           sec));
+//            sectionsToHide.erase(std::find(sectionsToHide.begin(),
+//                                           sectionsToHide.end(),
+//                                           sec));
 
         }
     }

@@ -159,5 +159,8 @@ private:
     QProgressBar* progressBar;
     GroupEditorWidget* grWgt;
 
+
+    DataId _erase_section_id;
+
 };
 #endif // MAINWINDOW_H
