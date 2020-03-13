@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "mainwindow.h" // подключение заголовочных файлов и классов
 
 #include <QApplication>
 
@@ -7,21 +7,21 @@
 #include "nrtlmanager.h"
 #include "nrtlmodel.h"
 
-QString loadTxtFile(const QString& path);
+QString loadTxtFile(const QString& path); //Вызов функцию loadTxtFile, принимающей адрес объекта класса QString, и после исполнения возвращает объект класса QString
 
-
+/*Создание данного виджета и формата для него.*/
 int main(int argc, char *argv[])
 {
     QApplication::setAttribute(Qt::AA_UseDesktopOpenGL);
     QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
     QApplication a(argc, argv);
-    a.setApplicationName("Nerve Tracts Lab");
-    a.setOrganizationName("Higher School of Economics");
-    a.setOrganizationDomain("hse.ru");
-    QSurfaceFormat format;
-    format.setVersion(2,1);
+    a.setApplicationName("Nerve Tracts Lab");// задание уникального имени приложения
+    a.setOrganizationName("Higher School of Economics"); // задание уникального имени домена
+    a.setOrganizationDomain("hse.ru");// задание уникального имени домена
+    QSurfaceFormat format; //предоставление формата  QSurfaceFormat
+    format.setVersion(2,1); //задание версии 
     format.setProfile(QSurfaceFormat::CoreProfile);
-    format.setDepthBufferSize(32);
+    format.setDepthBufferSize(32); //задание буфера глубины
     format.setSamples(16);
     QSurfaceFormat::setDefaultFormat(format);
     NrtlModel* md = new NrtlModel();
@@ -32,8 +32,9 @@ int main(int argc, char *argv[])
 //    a.setStyleSheet(loadTxtFile(":/qss/styles/dark.qss"));
     return a.exec();
 }
-
+ //Вызов функцию loadTxtFile, принимающей адрес объекта класса QString, и после исполнения возвращает объект класса QString
 QString loadTxtFile(const QString& path)
+    //открытие файла в интерфейсе только на чтение
 {
     QFile file(path);
     file.open(QFile::ReadOnly);
@@ -46,7 +47,7 @@ QString loadTxtFile(const QString& path)
  //       result += "\n";
     }
 
-    qDebug() << result;
-    return result;
+    qDebug() << result; // вывод информации об отладке
+    return result; // возвращение результата
 }
 
