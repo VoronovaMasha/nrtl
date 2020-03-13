@@ -1,11 +1,13 @@
-#ifndef NRTLTYPE_H
-#define NRTLTYPE_H
-#include <stdint.h>
-#include <QColor>
-#include <vector>
-#include <QVector3D>
 
-template<typename DocType=void*>
+
+#ifndef NRTLTYPE_H //условная компиляция при неопределенном NRTLTYPE_H
+#define NRTLTYPE_H //идентифекатор на замену символов
+#include <stdint.h> //подключене заголовочных файлов
+#include <QColor>//подключене заголовочных файлов
+#include <vector>//подключене заголовочных файлов
+#include <QVector3D>//подключене заголовочных файлов
+
+template<typename DocType=void*> //задание шаблонных классов
 class IVContainer;
 class MeshModel;
 
