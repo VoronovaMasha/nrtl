@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0"> 
  <class>AllignWindow</class>
  <widget class="QMainWindow" name="AllignWindow">
   <property name="geometry">
-   <rect>
+   <rect> 
     <x>0</x>
     <y>0</y>
     <width>688</width>
