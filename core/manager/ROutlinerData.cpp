@@ -1,25 +1,28 @@
+//подключение заголовочных файлов
 #include "nrtlmanager.h"
 
 bool ROutlinerData::StepList::add(DataId step_id)
+    //сборка модели
 {
-    model->outliner.addStep(step_id);
-    IStep* stp = getStep(step_id);
+    model->outliner.addStep(step_id); // 
+    IStep* stp = getStep(step_id); //
     stp->group_section_map.clear();
     stp->section_group_map.clear();
 
     for(auto group : model->outliner.groups)
+        
     {
         stp->group_section_map[group] = NONE;
     }
 
     return true;
 }
-bool ROutlinerData::StepList::remove(DataId step_id)
+bool ROutlinerData::StepList::remove(DataId step_id) //удаление идентификатора степа
 {
     model->outliner.deleteStep(step_id);
     return true;
 }
-bool ROutlinerData::StepList::changeId(DataId old_step_id,DataId new_step_id)
+bool ROutlinerData::StepList::changeId(DataId old_step_id,DataId new_step_id) // изменение идентификатора существующего степа
 {
     for(unsigned int i=0;i<model->outliner.stepVec.size();i++)
     {
@@ -31,7 +34,7 @@ bool ROutlinerData::StepList::changeId(DataId old_step_id,DataId new_step_id)
     }
     return true;
 }
-RStepList& ROutlinerData::StepList::get()
+RStepList& ROutlinerData::StepList::get() // новый список стэпов
 {
     return model->outliner.stepVec;
 }
@@ -45,7 +48,7 @@ bool ROutlinerData::StepList::relocate(DataId step_id, int pos)
     return true;
 }
 
-bool ROutlinerData::GroupList::add(IGroupId group)
+bool ROutlinerData::GroupList::add(IGroupId group)//группировка сечений в степы  
 {
     model->outliner.groups.push_back(group);
     for(auto stp : model->outliner.stepVec)
@@ -56,7 +59,7 @@ bool ROutlinerData::GroupList::add(IGroupId group)
     return true;
 }
 
-bool ROutlinerData::GroupList::changeIdCounter(int newIdCounter)
+bool ROutlinerData::GroupList::changeIdCounter(int newIdCounter)// изменение идентификатора счетчика
 {
     groupIdCounter=newIdCounter;
     return true;
